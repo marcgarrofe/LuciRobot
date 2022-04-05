@@ -1,0 +1,35 @@
+ROBOT
+
+Sensors:
+- 1. Proximitat - Ultrasons / Infrarojos
+- 1. Camera	(X)
+- 1. Calor
+- 1. Temperatura (x)
+- 2. GPS (Precisió???)
+- 2. Micro
+- 2. Gas 	(x)
+
+
+Controlador : 	(X)
+- 1. Raspberry
+- 2. ESP32
+
+Components :
+- Oruga
+- Motors	(X)
+- Bateria
+- LEDS posició (RGB)
+- Altaveu
+- Alimentació
+- Microfón
+
+Features:
+- 2. Mapejar
+- 1. Reconeixament de persones 
+- 1. Mesurar temperatura
+- 1. Navegacio
+- 2. Reconeixament de veu 
+
+Nom:
+- Luci
+- FireBot
