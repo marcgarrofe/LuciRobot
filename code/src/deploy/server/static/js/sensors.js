@@ -13,10 +13,9 @@ function update(){
     
     socket.emit('get_sensors', "get");
 
-    setTimeout(update, 500); //agafem valors cada sensor a cada segon
+    setTimeout(update, 1000); //agafem valors cada sensor a cada segon
 }
 
-update();
 
 // We receive the data from sensors
 socket.on('receive_sensors',  function (data) {
@@ -32,4 +31,7 @@ socket.on('receive_sensors',  function (data) {
 });
 
 
-
+$( document ).ready(function() {
+    console.log( "ready!" );
+    update();
+});
