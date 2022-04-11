@@ -7,7 +7,7 @@
 Com instalar les llibreries i fer funcionar?
 
 - Pas 1:
-`cd src`
+`cd code`
 
 - Pas 2:
 `pip install -r requirements.txt` 

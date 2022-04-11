@@ -76,7 +76,7 @@ void setup() {
   initDHTSensor();
 }
 
-double readDHTTemp(){
+float readDHTTemp(){
   // Get temperature event and print its value.
   sensors_event_t event;
   dht.temperature().getEvent(&event);
@@ -86,15 +86,11 @@ double readDHTTemp(){
     return 0.0;
   }
   else {
-    /*Serial.print(F("Temperature: "));
-    Serial.print(event.temperature);
-    Serial.println(F("°C"));*/
-
     return event.temperature;
   }
 }
 
-double readDHTHumidity(){
+float readDHTHumidity(){
   // Get humidity event and print its value.
   sensors_event_t event;
   dht.humidity().getEvent(&event);
@@ -104,10 +100,6 @@ double readDHTHumidity(){
     return 0.0;
   }
   else {
-    /*Serial.print(F("Humidity: "));
-    Serial.print(event.relative_humidity);
-    Serial.println(F("%"));*/
-
     return event.relative_humidity;
   }
 }
@@ -157,8 +149,8 @@ void loop() {
   // Delay between measurements.
   delay(delayMS);
   
-  double dht11_temp = readDHTTemp();
-  double dht11_humidity = readDHTHumidity();
+  float dht11_temp = readDHTTemp();
+  float dht11_humidity = readDHTHumidity();
   
   int ultrasound_sensor_1_distance = 0.01723 * readUltrasonicDistance (49, 51);
   float rs_med = readMQ(MQ_PIN);      // Obtener la Rs promedio
@@ -170,5 +162,4 @@ void loop() {
   doc["dht11_temp"] = dht11_temp;
   
   serializeJson(doc, Serial);
-  Serial.println("");
 }
