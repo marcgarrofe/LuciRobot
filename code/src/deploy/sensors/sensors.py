@@ -8,6 +8,7 @@ class Sensors:
         # ho tenim com objecte per si volem accedir desde python pero per el websocket enviare el json
         self.gas_concentration = 0.0
         self.ultrasound_sensor_1_distance = 0.0
+        self.ultrasound_sensor_2_distance = 0.0
         self.dht11_humidity = 0.0
         self.dht11_temp = 0.0
         self.json_value = ""
@@ -20,6 +21,7 @@ class Sensors:
 
         self.gas_concentration = json_dict['gas_concentration']
         self.ultrasound_sensor_1_distance = json_dict['ultrasound_sensor_1_distance']
+        self.ultrasound_sensor_2_distance = json_dict['ultrasound_sensor_2_distance']
         self.dht11_humidity = json_dict['dht11_humidity']
         self.dht11_temp = json_dict['dht11_temp']
         self.json_value = json_dict
@@ -30,6 +32,7 @@ class Sensors:
         json_text = {}
         json_text["gas_concentration"] = 0.0
         json_text["ultrasound_sensor_1_distance"] = 0.0
+        json_text["ultrasound_sensor_2_distance"] = 0.0
         json_text["dht11_humidity"] = 0.0
         json_text["dht11_temp"] = 0.0
         

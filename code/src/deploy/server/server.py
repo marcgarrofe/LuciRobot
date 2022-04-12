@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from flask_socketio import emit
 from flask_socketio import SocketIO
-from flask_ngrok import run_with_ngrok
 # Bibliografía.
 # https://stackoverflow.com/questions/51970072/real-time-video-stabilization-opencv
 
@@ -21,7 +20,7 @@ class Server:
         # app.run(port=self.port, debug=True)
         global sensors
         sensors = self.sensors
-        run_with_ngrok(socketio.run(app, host='0.0.0.0', port = self.port, debug=True))
+        socketio.run(app, host='0.0.0.0', port = self.port, debug=True)
         sensors.start_reading()
 
 

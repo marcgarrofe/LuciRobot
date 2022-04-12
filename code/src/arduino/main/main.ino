@@ -12,17 +12,29 @@
 #include <DHT_U.h>
 #include "ArduinoJson.h"
 
-// DHT 1 SENSOR
-#define DHTPIN 53     // Digital pin connected to the DHT sensor 
-// Uncomment the type of sensor in use:
-#define DHTTYPE    DHT11     // DHT 11
+// TODOS LOS PINS A DEFINIR
 
+// ULTRASOUND SENSOR 1
+#define UltraSoundTrigPin_1 49
+#define UltraSoundEchoPin_1 51
+
+// ULTRASOUND SENSOR 2
+#define UltraSoundTrigPin_2 2
+#define UltraSoundEchoPin_2 3
+
+#define DHTPIN 53     // Digital pin connected to the DHT sensor 
+
+const int MQ_PIN = A0;      // Pin del sensor
+ 
+ 
+// DHT 1 SENSOR VARIABLES (TEMPERATURE & HUMIDITY)
+#define DHTTYPE    DHT11     // Utilitzem el DHT 11
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
 uint32_t delayMS;
 
-// GAS SENSOR
-const int MQ_PIN = A0;      // Pin del sensor
+// GAS SENSOR VARIABLES
+
 const int RL_VALUE = 5;      // Resistencia RL del modulo en Kilo ohms
 const int R0 = 10;          // Resistencia R0 del sensor en Kilo ohms
 // Datos para lectura multiple
@@ -69,6 +81,8 @@ void initDHTSensor(){
   Serial.println(F("------------------------------------"));
   // Set delay between sensor readings based on sensor details.
   delayMS = sensor.min_delay / 1000;
+  Serial.println(delayMS);
+  
 }
 
 void setup() {
@@ -152,14 +166,18 @@ void loop() {
   float dht11_temp = readDHTTemp();
   float dht11_humidity = readDHTHumidity();
   
-  int ultrasound_sensor_1_distance = 0.01723 * readUltrasonicDistance (49, 51);
+  int ultrasound_sensor_1_distance = 0.01723 * readUltrasonicDistance (UltraSoundTrigPin_1, UltraSoundEchoPin_1);
+  int ultrasound_sensor_2_distance = 0.01723 * readUltrasonicDistance (UltraSoundTrigPin_2, UltraSoundEchoPin_2);
+  
   float rs_med = readMQ(MQ_PIN);      // Obtener la Rs promedio
   float gas_concentration = getConcentration(rs_med/R0);   // Obtener la concentración
    
   doc["gas_concentration"] = gas_concentration;
   doc["ultrasound_sensor_1_distance"]   = ultrasound_sensor_1_distance;
+  doc["ultrasound_sensor_2_distance"]   = ultrasound_sensor_2_distance;
   doc["dht11_humidity"] = dht11_humidity;
   doc["dht11_temp"] = dht11_temp;
   
   serializeJson(doc, Serial);
+  Serial.println("");
 }
