@@ -15,18 +15,18 @@
 // TODOS LOS PINS A DEFINIR
 
 // ULTRASOUND SENSOR 1
-#define UltraSoundTrigPin_1 49
-#define UltraSoundEchoPin_1 51
+#define UltraSoundTrigPin_1 7
+#define UltraSoundEchoPin_1 3
 
 // ULTRASOUND SENSOR 2
-#define UltraSoundTrigPin_2 2
-#define UltraSoundEchoPin_2 3
+#define UltraSoundTrigPin_2 12
+#define UltraSoundEchoPin_2 11
 
-#define DHTPIN 53     // Digital pin connected to the DHT sensor 
+#define DHTPIN 2     // Digital pin connected to the DHT sensor 
 
 const int MQ_PIN = A0;      // Pin del sensor
- 
- 
+
+
 // DHT 1 SENSOR VARIABLES (TEMPERATURE & HUMIDITY)
 #define DHTTYPE    DHT11     // Utilitzem el DHT 11
 DHT_Unified dht(DHTPIN, DHTTYPE);
@@ -53,7 +53,7 @@ const float punto1[] = { log10(X1), log10(Y1) };
 const float scope = (punto1[1] - punto0[1]) / (punto1[0] - punto0[0]);
 const float coord = punto0[1] - punto0[0] * scope;
 
-void initDHTSensor(){
+void initDHTSensor() {
   // Initialize device.
   dht.begin();
   Serial.println(F("DHTxx Unified Sensor Example"));
@@ -82,7 +82,7 @@ void initDHTSensor(){
   // Set delay between sensor readings based on sensor details.
   delayMS = sensor.min_delay / 1000;
   Serial.println(delayMS);
-  
+
 }
 
 void setup() {
@@ -90,7 +90,7 @@ void setup() {
   initDHTSensor();
 }
 
-float readDHTTemp(){
+float readDHTTemp() {
   // Get temperature event and print its value.
   sensors_event_t event;
   dht.temperature().getEvent(&event);
@@ -104,7 +104,7 @@ float readDHTTemp(){
   }
 }
 
-float readDHTHumidity(){
+float readDHTHumidity() {
   // Get humidity event and print its value.
   sensors_event_t event;
   dht.humidity().getEvent(&event);
@@ -121,22 +121,22 @@ float readDHTHumidity(){
 // Obtener la resistencia promedio en N muestras
 float readMQ(int mq_pin)
 {
-   float rs = 0;
-   for (int i = 0;i<READ_SAMPLE_TIMES;i++) {
-      rs += getMQResistance(analogRead(mq_pin));
-      delay(READ_SAMPLE_INTERVAL);
-   }
-   return rs / READ_SAMPLE_TIMES;
+  float rs = 0;
+  for (int i = 0; i < READ_SAMPLE_TIMES; i++) {
+    rs += getMQResistance(analogRead(mq_pin));
+    delay(READ_SAMPLE_INTERVAL);
+  }
+  return rs / READ_SAMPLE_TIMES;
 }
 // Obtener resistencia a partir de la lectura analogica
 float getMQResistance(int raw_adc)
 {
-   return (((float)RL_VALUE / 1000.0*(1023 - raw_adc) / raw_adc));
+  return (((float)RL_VALUE / 1000.0 * (1023 - raw_adc) / raw_adc));
 }
 // Obtener concentracion 10^(coord + scope * log (rs/r0)
 float getConcentration(float rs_ro_ratio)
 {
-   return pow(10, coord + scope * log(rs_ro_ratio));
+  return pow(10, coord + scope * log(rs_ro_ratio));
 }
 
 
@@ -162,22 +162,22 @@ DynamicJsonDocument doc(1024);
 void loop() {
   // Delay between measurements.
   delay(delayMS);
-  
+
   float dht11_temp = readDHTTemp();
   float dht11_humidity = readDHTHumidity();
-  
+
   int ultrasound_sensor_1_distance = 0.01723 * readUltrasonicDistance (UltraSoundTrigPin_1, UltraSoundEchoPin_1);
   int ultrasound_sensor_2_distance = 0.01723 * readUltrasonicDistance (UltraSoundTrigPin_2, UltraSoundEchoPin_2);
-  
+
   float rs_med = readMQ(MQ_PIN);      // Obtener la Rs promedio
-  float gas_concentration = getConcentration(rs_med/R0);   // Obtener la concentración
-   
+  float gas_concentration = getConcentration(rs_med / R0); // Obtener la concentración
+
   doc["gas_concentration"] = gas_concentration;
   doc["ultrasound_sensor_1_distance"]   = ultrasound_sensor_1_distance;
   doc["ultrasound_sensor_2_distance"]   = ultrasound_sensor_2_distance;
   doc["dht11_humidity"] = dht11_humidity;
   doc["dht11_temp"] = dht11_temp;
-  
+
   serializeJson(doc, Serial);
   Serial.println("");
 }
