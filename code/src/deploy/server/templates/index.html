@@ -1,0 +1,30 @@
+<!-- Show 4 text with 4 sensor values -->
+<html>
+<head>
+    <title>Sensor Values</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/sensors.js')}}"></script>
+    
+
+    <h1> Gas Concentration </h1>
+        <p id = "gas_concentration">Sensor 1:</p>
+    
+    <h1> Ultrasound Sensor 1 distance:  </h1>
+    <p id = "ultrasound_sensor_1_distance">Sensor 2:</p>
+    
+    <h1> Ultrasound Sensor 2 distance:  </h1>
+    <p id = "ultrasound_sensor_2_distance">Sensor 2:</p>
+
+    <h1> DHT11 Humidity: </h1>
+    
+    <p id = "dht11_humidity">Sensor 3:</p>
+    <h1> DHT11 Temperature:</h1>
+    
+    <p id = "dht11_temp">Sensor 4:</p>
+
+</html>
+
+

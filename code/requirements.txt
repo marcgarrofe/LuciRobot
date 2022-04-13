@@ -1,0 +1,6 @@
+flask
+flask-socketio
+pyserial
+numpy
+opencv-python       
+vidgear[core]
