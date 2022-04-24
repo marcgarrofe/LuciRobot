@@ -14,6 +14,16 @@
 
 // TODOS LOS PINS A DEFINIR
 
+// MOTOR B
+#define EnB 6
+#define inB1 5
+#define inB2 8
+
+// MOTOR A
+#define EnA 9
+#define inA1 10
+#define inA2 13
+
 // ULTRASOUND SENSOR 1
 #define UltraSoundTrigPin_1 7
 #define UltraSoundEchoPin_1 3
@@ -53,6 +63,16 @@ const float punto1[] = { log10(X1), log10(Y1) };
 const float scope = (punto1[1] - punto0[1]) / (punto1[0] - punto0[0]);
 const float coord = punto0[1] - punto0[0] * scope;
 
+
+void initL298nPins(){
+   pinMode (inA1, OUTPUT);
+   pinMode (inA2, OUTPUT);
+   pinMode (inB1, OUTPUT);
+   pinMode (inB2, OUTPUT);
+   pinMode (EnA, OUTPUT);
+   pinMode (EnB, OUTPUT);
+}
+
 void initDHTSensor() {
   // Initialize device.
   dht.begin();
@@ -88,6 +108,7 @@ void initDHTSensor() {
 void setup() {
   Serial.begin(9600);
   initDHTSensor();
+  initL298nPins();
 }
 
 float readDHTTemp() {
@@ -154,6 +175,89 @@ long readUltrasonicDistance (int triggerPin, int echoPin)
   pinMode (echoPin, INPUT);
   // Reads the echo pin, and returns the sound wave travel time
   return pulseIn (echoPin, HIGH);
+}
+
+// Funcions pels motors
+void motors_forward( int speed)
+{
+  if (speed < 0) speed =0;
+  if (speed > 255) speed = 255;
+  
+ //dirreccio motor A
+ digitalWrite (inA1, HIGH);
+ digitalWrite (inA2, LOW);
+ analogWrite (EnA, speed); 
+ //direccio motor B
+ digitalWrite (inB1, HIGH);
+ digitalWrite (inB2, LOW);
+ analogWrite (EnB, speed); 
+}
+
+void motors_backward ( int speed)
+{
+  if (speed < 0) speed =0;
+  if (speed > 255) speed = 255;
+  
+ //dirreccio motor A
+ digitalWrite (inA1, LOW);
+ digitalWrite (inA2, HIGH);
+ analogWrite (EnA, speed); 
+ //direccio motor B
+ digitalWrite (inB1, LOW);
+ digitalWrite (inB2, HIGH);
+ analogWrite (EnB, speed);
+}
+
+void motors_turn_backward( int speed_left, int speed_right)
+{
+  if (speed_left < 0) speed_left =0;
+  if (speed_left > 255) speed_left = 255;
+  if (speed_right < 0) speed_right =0;
+  if (speed_right > 255) speed_right = 255;
+    
+ digitalWrite (inA1, HIGH);
+ digitalWrite (inA2, LOW);
+ analogWrite (EnA, speed_left); 
+
+ digitalWrite (inB1, HIGH);
+ digitalWrite (inB2, LOW);
+ analogWrite (EnB, speed_right);
+}
+
+void motors_turn_left_still( int speed)
+{
+  if (speed < 0) speed =0;
+  if (speed > 255) speed = 255;
+  
+ digitalWrite (inA1, LOW);
+ digitalWrite (inA2, HIGH);
+ analogWrite (EnA, speed); 
+ digitalWrite (inB1, HIGH);
+ digitalWrite (inB2, LOW);
+ analogWrite (EnB, speed); 
+}
+
+void motors_turn_right_still( int speed)
+{
+  if (speed < 0) speed =0;
+  if (speed > 255) speed = 255;
+  
+ digitalWrite (inA1, HIGH);
+ digitalWrite (inA2, LOW);
+ analogWrite (EnA, speed); 
+ digitalWrite (inB1, LOW);
+ digitalWrite (inB2, HIGH);
+ analogWrite (EnB, speed); 
+}
+
+void motors_stop()
+{
+ digitalWrite (inA1, LOW);
+ digitalWrite (inA2, LOW);
+ analogWrite (EnA, 0); 
+ digitalWrite (inB1, LOW);
+ digitalWrite (inB2, LOW);
+ analogWrite (EnB, 0);
 }
 
 
