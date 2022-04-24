@@ -208,7 +208,7 @@ void motors_backward ( int speed)
  analogWrite (EnB, speed);
 }
 
-void motors_turn_backward( int speed_left, int speed_right)
+void motors_turn_forward( int speed_left, int speed_right)
 {
   if (speed_left < 0) speed_left =0;
   if (speed_left > 255) speed_left = 255;
@@ -232,6 +232,7 @@ void motors_turn_left_still( int speed)
  digitalWrite (inA1, LOW);
  digitalWrite (inA2, HIGH);
  analogWrite (EnA, speed); 
+ 
  digitalWrite (inB1, HIGH);
  digitalWrite (inB2, LOW);
  analogWrite (EnB, speed); 
@@ -259,7 +260,6 @@ void motors_stop()
  digitalWrite (inB2, LOW);
  analogWrite (EnB, 0);
 }
-
 
 DynamicJsonDocument doc(1024);
 
