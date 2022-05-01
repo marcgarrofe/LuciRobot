@@ -4,7 +4,7 @@ from src.deploy.sensors.sensors  import Sensors
 
 # video = video(stabilize=True)
 
-sensors = Sensors()
+sensors = Sensors(port='COM5')
 
 server = Server(sensors)
 server.start_server()
