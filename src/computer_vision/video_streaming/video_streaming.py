@@ -1,6 +1,6 @@
 from vidgear.gears import VideoGear
 import cv2
-from ..object_detector.object_detector import people_detectorHOG
+from ..object_detector.hog_detector import people_detectorHOG
 from ..video_stabilization.video_stabilization import video_stabilizer
 
 

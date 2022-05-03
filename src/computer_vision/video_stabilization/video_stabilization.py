@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-
+from vidstab import VidStab
 
 default_options = {
     'width' : 480,
@@ -29,8 +29,10 @@ def crop_frame(frame, proportion):
     return cv2.resize(frame, dsize=(width, height))
 
 
-class Stabilizer:
-    def __init__(self, video_path=None, camera_source=0, gray_scale=False, resize=False, crop_frame=True, compare_stabilization=False, buffer_size=5):
+class StabilizerHomography:
+    def __init__(self, type='homography', video_path=None, camera_source=0, gray_scale=False, resize=False, crop_frame=True, compare_stabilization=False, buffer_size=5):
+        # Guardem el tipus de estabilitzacio que es vol realitzar
+        self.type = type
 
         # Identifiquem si el input del estabilitzador és un video o una camera
         if video_path is not None:
@@ -42,8 +44,6 @@ class Stabilizer:
         self.resize = resize
         self.crop_frame = crop_frame
         self.compare_stabilization = compare_stabilization
-
-        self.orb = cv2.ORB_create(nfeatures=1000)
 
         if video_path is not None:
             self.vid_capture = cv2.VideoCapture(video_path)
@@ -60,23 +60,31 @@ class Stabilizer:
             self.width = default_options['width']
             self.height = default_options['height']
 
-        # Obtenim el primer frame
-        err, self.previous_frame = self.get_frame()
+        if self.type == "homography":
+            # Definim detector de punts claus
+            self.orb = cv2.ORB_create(nfeatures=1000)
+            # Obtenim el primer frame
+            err, self.previous_frame = self.get_frame()
 
-        if err is False:
-            raise ValueError("Error getting first frame")
+            if err is False:
+                raise ValueError("Error getting first frame")
 
-        self.homography_buffer_size = buffer_size
-        self.list_weights = calculate_weights(self.homography_buffer_size, divide_by=0.7)
-        self.homography_buffer = list()
+            self.homography_buffer_size = buffer_size
+            self.list_weights = calculate_weights(self.homography_buffer_size, divide_by=0.7)
+            self.homography_buffer = list()
 
-        if self.gray_scale is True:
-            self.previous_frame_gray = self.previous_frame
+            if self.gray_scale is True:
+                self.previous_frame_gray = self.previous_frame
+            else:
+                self.previous_frame_gray = cv2.cvtColor(self.previous_frame, cv2.COLOR_BGR2GRAY)
+
+            # Calculem punts de referència i descriptors amb el detector ORB
+            self.prev_keypoints, self.prev_descriptors = self.orb.detectAndCompute(self.previous_frame, None)
+
+        elif self.type == "vidstab":
+            self.stabilizer = VidStab()
         else:
-            self.previous_frame_gray = cv2.cvtColor(self.previous_frame, cv2.COLOR_BGR2GRAY)
-
-        # Calculem punts de referència i descriptors amb el detector ORB
-        self.prev_keypoints, self.prev_descriptors = self.orb.detectAndCompute(self.previous_frame, None)
+            raise ValueError("Type of stabilization error")
 
 
     def get_frame(self):
@@ -94,7 +102,7 @@ class Stabilizer:
 
         return err, frame
 
-    def get_stabilized_frame_kp(self):
+    def kp_stabilization(self):
         # Obtenim frame
         err, frame = self.get_frame()
 
@@ -121,8 +129,6 @@ class Stabilizer:
         for m, n in matches:
             if m.distance < THR * n.distance:
                 good.append(m)
-
-        # print("Number ORB Good Points = " + str(len(good)))
 
         # Set minimum match condition
         MIN_MATCH_COUNT = 6
@@ -168,3 +174,10 @@ class Stabilizer:
 
         return err, frame
 
+    def get_stabilized_frame(self):
+        if self.type == "homography":
+            return self.kp_stabilization()
+        elif self.type == "vidstab":
+            err, frame = self.get_frame()
+            stabilized_frame = self.stabilizer.stabilize_frame(input_frame=frame, border_size=0)
+            return err, stabilized_frame
