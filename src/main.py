@@ -1,4 +1,4 @@
-from src.computer_vision.video_stabilization.video_stabilization import video
+from src.computer_vision.video_streaming.video_streaming import video, video_v2
 import cv2
 
 video_options = {
@@ -8,7 +8,9 @@ video_options = {
 }
 
 # Declaració objecte classe video que ens permet obtenir imatges de la camera.
-video = video(stabilize=False, record=True, detect_people=True, video_options=video_options)
+# video = video(stabilize=False, record=True, detect_people=True, video_options=video_options)
+
+video = video_v2(video_options=video_options, stabilize=True)
 
 # Declarem loop infinit
 while True:
