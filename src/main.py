@@ -1,5 +1,7 @@
-from src.computer_vision.video_streaming.video_streaming import video, video_v2
+
 import cv2
+from src.computer_vision.object_detector.object_detector import people_detectorHOG
+from src.computer_vision.video_stabilization.video_stabilization import Stabilizer
 
 video_options = {
     "CAP_PROP_FRAME_WIDTH": 640,
@@ -7,18 +9,16 @@ video_options = {
     "CAP_PROP_FPS": 10,
 }
 
-# Declaració objecte classe video que ens permet obtenir imatges de la camera.
-# video = video(stabilize=False, record=True, detect_people=True, video_options=video_options)
+stabilizer = Stabilizer(resize=True, crop_frame=True, compare_stabilization=False, buffer_size=5)
+detector = people_detectorHOG()
 
-video = video_v2(video_options=video_options, stabilize=True)
+err, frame = stabilizer.get_stabilized_frame_kp()
 
 # Declarem loop infinit
-while True:
-
-    frame = video.get_frame()
-    video.show_frame(frame)
-
-    # check for 'q' key if pressed
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord("q"):
+while err is True:
+    cv2.imshow("video", frame)
+    key = cv2.waitKey(20)
+    if key == ord('q'):
         break
+    err, frame = stabilizer.get_stabilized_frame_kp()
+    frame = detector.scan_people(frame)
