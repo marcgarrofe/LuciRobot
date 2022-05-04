@@ -24,9 +24,9 @@ else:
 
 # Si es vol testejar amb un video, nomes cal indicar la ruta al video en al variable "video_path".from
 # Si es deixa la variable "video_path" buida, s'agafa per defecte l'entrada de camera 0
-# stabilizer = StabilizerHomography(video_path=VIDEO_TESTING_PATH, type=STABILIZER, resize=True, crop_frame=True, compare_stabilization=False, buffer_size=5)
-
 stabilizer = StabilizerHomography(video_path=VIDEO_TESTING_PATH, type=STABILIZER, resize=True, crop_frame=True, compare_stabilization=False, buffer_size=5)
+
+# stabilizer = StabilizerHomography(type=STABILIZER, resize=True, crop_frame=True, compare_stabilization=False, buffer_size=5)
 err, frame = stabilizer.get_stabilized_frame()
 
 # Declarem loop infinit
