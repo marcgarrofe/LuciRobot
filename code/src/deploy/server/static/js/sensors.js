@@ -1,11 +1,11 @@
 var socket = io();
 
 socket.on('connect', function() {
-    socket.emit('on_client', {data: 'New client connected'});
+    socket.emit('on_client', {data: 'connected'});
 });
 
 socket.on('disconnect', function() {
-    socket.emit('on_client', {data: 'Client disconnected'});
+    socket.emit('on_client', {data: 'disconnected'});
 });
 
 function update(){
@@ -33,5 +33,5 @@ socket.on('receive_sensors',  function (data) {
 
 $( document ).ready(function() {
     console.log( "ready!" );
-    update();
+    // update();
 });
