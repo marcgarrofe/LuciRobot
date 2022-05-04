@@ -11,10 +11,10 @@ socketio = SocketIO(app)
 sensors = None
 
 class Server:
-    def __init__(self, sensors, port=5000):
+    def __init__(self, sensors, video_output, port=5000):
         self.port = port
         self.sensors = sensors
-        
+        self.video_output = video_output
 
     def start_server(self):
         # app.run(port=self.port, debug=True)
@@ -43,4 +43,6 @@ def home():
     # show the index.html page
     return  render_template("index.html")
 
-
+@app.route('/video_feed')
+def video_feed():
+    return Response(self.video_output.gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
