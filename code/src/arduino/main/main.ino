@@ -14,19 +14,29 @@
 
 // TODOS LOS PINS A DEFINIR
 
+// MOTOR B
+#define EnB 6
+#define inB1 5
+#define inB2 8
+
+// MOTOR A
+#define EnA 9
+#define inA1 10
+#define inA2 13
+
 // ULTRASOUND SENSOR 1
-#define UltraSoundTrigPin_1 49
-#define UltraSoundEchoPin_1 51
+#define UltraSoundTrigPin_1 7
+#define UltraSoundEchoPin_1 3
 
 // ULTRASOUND SENSOR 2
-#define UltraSoundTrigPin_2 2
-#define UltraSoundEchoPin_2 3
+#define UltraSoundTrigPin_2 12
+#define UltraSoundEchoPin_2 11
 
-#define DHTPIN 53     // Digital pin connected to the DHT sensor 
+#define DHTPIN 2     // Digital pin connected to the DHT sensor 
 
 const int MQ_PIN = A0;      // Pin del sensor
- 
- 
+
+
 // DHT 1 SENSOR VARIABLES (TEMPERATURE & HUMIDITY)
 #define DHTTYPE    DHT11     // Utilitzem el DHT 11
 DHT_Unified dht(DHTPIN, DHTTYPE);
@@ -53,7 +63,17 @@ const float punto1[] = { log10(X1), log10(Y1) };
 const float scope = (punto1[1] - punto0[1]) / (punto1[0] - punto0[0]);
 const float coord = punto0[1] - punto0[0] * scope;
 
-void initDHTSensor(){
+
+void initL298nPins(){
+   pinMode (inA1, OUTPUT);
+   pinMode (inA2, OUTPUT);
+   pinMode (inB1, OUTPUT);
+   pinMode (inB2, OUTPUT);
+   pinMode (EnA, OUTPUT);
+   pinMode (EnB, OUTPUT);
+}
+
+void initDHTSensor() {
   // Initialize device.
   dht.begin();
   Serial.println(F("DHTxx Unified Sensor Example"));
@@ -82,15 +102,16 @@ void initDHTSensor(){
   // Set delay between sensor readings based on sensor details.
   delayMS = sensor.min_delay / 1000;
   Serial.println(delayMS);
-  
+
 }
 
 void setup() {
   Serial.begin(9600);
   initDHTSensor();
+  initL298nPins();
 }
 
-float readDHTTemp(){
+float readDHTTemp() {
   // Get temperature event and print its value.
   sensors_event_t event;
   dht.temperature().getEvent(&event);
@@ -104,7 +125,7 @@ float readDHTTemp(){
   }
 }
 
-float readDHTHumidity(){
+float readDHTHumidity() {
   // Get humidity event and print its value.
   sensors_event_t event;
   dht.humidity().getEvent(&event);
@@ -121,22 +142,22 @@ float readDHTHumidity(){
 // Obtener la resistencia promedio en N muestras
 float readMQ(int mq_pin)
 {
-   float rs = 0;
-   for (int i = 0;i<READ_SAMPLE_TIMES;i++) {
-      rs += getMQResistance(analogRead(mq_pin));
-      delay(READ_SAMPLE_INTERVAL);
-   }
-   return rs / READ_SAMPLE_TIMES;
+  float rs = 0;
+  for (int i = 0; i < READ_SAMPLE_TIMES; i++) {
+    rs += getMQResistance(analogRead(mq_pin));
+    delay(READ_SAMPLE_INTERVAL);
+  }
+  return rs / READ_SAMPLE_TIMES;
 }
 // Obtener resistencia a partir de la lectura analogica
 float getMQResistance(int raw_adc)
 {
-   return (((float)RL_VALUE / 1000.0*(1023 - raw_adc) / raw_adc));
+  return (((float)RL_VALUE / 1000.0 * (1023 - raw_adc) / raw_adc));
 }
 // Obtener concentracion 10^(coord + scope * log (rs/r0)
 float getConcentration(float rs_ro_ratio)
 {
-   return pow(10, coord + scope * log(rs_ro_ratio));
+  return pow(10, coord + scope * log(rs_ro_ratio));
 }
 
 
@@ -156,28 +177,111 @@ long readUltrasonicDistance (int triggerPin, int echoPin)
   return pulseIn (echoPin, HIGH);
 }
 
+// Funcions pels motors
+void motors_forward( int speed)
+{
+  if (speed < 0) speed =0;
+  if (speed > 255) speed = 255;
+  
+ //dirreccio motor A
+ digitalWrite (inA1, HIGH);
+ digitalWrite (inA2, LOW);
+ analogWrite (EnA, speed); 
+ //direccio motor B
+ digitalWrite (inB1, HIGH);
+ digitalWrite (inB2, LOW);
+ analogWrite (EnB, speed); 
+}
+
+void motors_backward ( int speed)
+{
+  if (speed < 0) speed =0;
+  if (speed > 255) speed = 255;
+  
+ //dirreccio motor A
+ digitalWrite (inA1, LOW);
+ digitalWrite (inA2, HIGH);
+ analogWrite (EnA, speed); 
+ //direccio motor B
+ digitalWrite (inB1, LOW);
+ digitalWrite (inB2, HIGH);
+ analogWrite (EnB, speed);
+}
+
+void motors_turn_forward( int speed_left, int speed_right)
+{
+  if (speed_left < 0) speed_left =0;
+  if (speed_left > 255) speed_left = 255;
+  if (speed_right < 0) speed_right =0;
+  if (speed_right > 255) speed_right = 255;
+    
+ digitalWrite (inA1, HIGH);
+ digitalWrite (inA2, LOW);
+ analogWrite (EnA, speed_left); 
+
+ digitalWrite (inB1, HIGH);
+ digitalWrite (inB2, LOW);
+ analogWrite (EnB, speed_right);
+}
+
+void motors_turn_left_still( int speed)
+{
+  if (speed < 0) speed =0;
+  if (speed > 255) speed = 255;
+  
+ digitalWrite (inA1, LOW);
+ digitalWrite (inA2, HIGH);
+ analogWrite (EnA, speed); 
+ 
+ digitalWrite (inB1, HIGH);
+ digitalWrite (inB2, LOW);
+ analogWrite (EnB, speed); 
+}
+
+void motors_turn_right_still( int speed)
+{
+  if (speed < 0) speed =0;
+  if (speed > 255) speed = 255;
+  
+ digitalWrite (inA1, HIGH);
+ digitalWrite (inA2, LOW);
+ analogWrite (EnA, speed); 
+ digitalWrite (inB1, LOW);
+ digitalWrite (inB2, HIGH);
+ analogWrite (EnB, speed); 
+}
+
+void motors_stop()
+{
+ digitalWrite (inA1, LOW);
+ digitalWrite (inA2, LOW);
+ analogWrite (EnA, 0); 
+ digitalWrite (inB1, LOW);
+ digitalWrite (inB2, LOW);
+ analogWrite (EnB, 0);
+}
 
 DynamicJsonDocument doc(1024);
 
 void loop() {
   // Delay between measurements.
   delay(delayMS);
-  
+
   float dht11_temp = readDHTTemp();
   float dht11_humidity = readDHTHumidity();
-  
+
   int ultrasound_sensor_1_distance = 0.01723 * readUltrasonicDistance (UltraSoundTrigPin_1, UltraSoundEchoPin_1);
   int ultrasound_sensor_2_distance = 0.01723 * readUltrasonicDistance (UltraSoundTrigPin_2, UltraSoundEchoPin_2);
-  
+
   float rs_med = readMQ(MQ_PIN);      // Obtener la Rs promedio
-  float gas_concentration = getConcentration(rs_med/R0);   // Obtener la concentración
-   
+  float gas_concentration = getConcentration(rs_med / R0); // Obtener la concentración
+
   doc["gas_concentration"] = gas_concentration;
   doc["ultrasound_sensor_1_distance"]   = ultrasound_sensor_1_distance;
   doc["ultrasound_sensor_2_distance"]   = ultrasound_sensor_2_distance;
   doc["dht11_humidity"] = dht11_humidity;
   doc["dht11_temp"] = dht11_temp;
-  
+
   serializeJson(doc, Serial);
   Serial.println("");
 }
