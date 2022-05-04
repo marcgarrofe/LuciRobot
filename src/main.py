@@ -37,4 +37,3 @@ while err is True:
         break
     err, frame = stabilizer.get_stabilized_frame()
     frame = detector.scan_people(frame)
-    
