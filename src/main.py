@@ -5,9 +5,12 @@ from src.computer_vision.object_detector.ssd_detector import people_detectorSSD
 
 
 DETECTOR = 'SSD'               # POT SER "SSD" o "HOG"
-STABILIZER = 'homography'      # POT SER "homography" o "vidstab"
+STABILIZER = 'homography'      # POT SER "homography", "vidstab" o "none"
 
-VIDEO_TESTING_PATH = 'computer_vision/test_data/video1.mp4'
+VIDEO_TESTING_PATH_1 = 'computer_vision/test_data/video1.mp4'
+VIDEO_TESTING_PATH_2 = 'computer_vision/test_data/video2.mp4'
+VIDEO_TESTING_PATH_3 = 'computer_vision/test_data/video3.mp4'
+VIDEO_TESTING_PATH_4 = 'computer_vision/test_data/video4.mp4'
 
 video_options = {
     "CAP_PROP_FRAME_WIDTH": 640,
@@ -24,7 +27,7 @@ else:
 
 # Si es vol testejar amb un video, nomes cal indicar la ruta al video en al variable "video_path".from
 # Si es deixa la variable "video_path" buida, s'agafa per defecte l'entrada de camera 0
-stabilizer = StabilizerHomography(video_path=VIDEO_TESTING_PATH, type=STABILIZER, resize=True, crop_frame=True, compare_stabilization=False, buffer_size=5)
+stabilizer = StabilizerHomography(video_path=VIDEO_TESTING_PATH_1, type=STABILIZER, resize=True, crop_frame=True, compare_stabilization=False, buffer_size=5)
 
 # stabilizer = StabilizerHomography(type=STABILIZER, resize=True, crop_frame=True, compare_stabilization=False, buffer_size=5)
 err, frame = stabilizer.get_stabilized_frame()

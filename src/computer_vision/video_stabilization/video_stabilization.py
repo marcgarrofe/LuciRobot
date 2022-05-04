@@ -83,7 +83,8 @@ class StabilizerHomography:
 
         elif self.type == "vidstab":
             self.stabilizer = VidStab()
-        else:
+
+        elif self.type != "none":
             raise ValueError("Type of stabilization error")
 
 
@@ -181,3 +182,6 @@ class StabilizerHomography:
             err, frame = self.get_frame()
             stabilized_frame = self.stabilizer.stabilize_frame(input_frame=frame, border_size=0)
             return err, stabilized_frame
+        elif self.type == "none":
+            return self.get_frame()
+
