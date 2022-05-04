@@ -17,3 +17,7 @@ Com instalar les llibreries i fer funcionar?
 
 - Pas 4:
 Isn't it beautiful?
+
+# Screenshots
+
+![GitHub Logo](/img/website.png)

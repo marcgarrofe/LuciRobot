@@ -42,6 +42,7 @@ class VideoOutput(VideoBaseModule):
                 
                 ret, buffer = cv2.imencode('.jpg', self.frame)
                 frame = buffer.tobytes()
+                
                 yield (b'--frame\r\n'
                     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
@@ -51,12 +52,12 @@ class VideoOutput(VideoBaseModule):
                 print("[INFO] No frame to show")
             
             
-    def show(self):
-        while not self.stopped:
-            ret, buffer = cv2.imencode('.jpg', self.frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+    # def show(self):
+    #     while not self.stopped:
+    #         ret, buffer = cv2.imencode('.jpg', self.frame)
+    #         frame = buffer.tobytes()
+    #         yield (b'--frame\r\n'
+    #                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
     def stop(self):
         self.stopped = True

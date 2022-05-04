@@ -1,11 +1,11 @@
 var socket = io();
 
 socket.on('connect', function() {
-    socket.emit('on_client', {data: 'New client connected'});
+    socket.emit('on_client', {data: 'connected'});
 });
 
 socket.on('disconnect', function() {
-    socket.emit('on_client', {data: 'Client disconnected'});
+    socket.emit('on_client', {data: 'disconnected'});
 });
 
 function update(){

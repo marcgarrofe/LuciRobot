@@ -2,36 +2,97 @@
 <html>
 <head>
     <title>Sensor Values</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', filename='js/sensors.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/sensors.js') }}"></script>
     
 
-    <!-- <h1> Gas Concentration </h1>
-        <p id = "gas_concentration">Sensor 1:</p>
-    
-    <h1> Ultrasound Sensor 1 distance:  </h1>
-    <p id = "ultrasound_sensor_1_distance">Sensor 2:</p>
-    
-    <h1> Ultrasound Sensor 2 distance:  </h1>
-    <p id = "ultrasound_sensor_2_distance">Sensor 2:</p>
+    <!-- Image and text -->
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Robot-icon.svg/768px-Robot-icon.svg.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
+            Luci
+          </a>
 
-    <h1> DHT11 Humidity: </h1>
-    
-    <p id = "dht11_humidity">Sensor 3:</p>
-    <h1> DHT11 Temperature:</h1>
-    
-    <p id = "dht11_temp">Sensor 4:</p> -->
+            <!-- add three badges -->
+            <span class="badge bg-success">MCU Ok</span>
+        </div>
+      </nav>
 
 
     <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8  offset-lg-2">
-                    <h3 class="mt-5">Live Streaming</h3>
-                    <img src="{{ url_for('video_feed') }}" width="100%">
+        <div class="container-fluid">
+            <div class="row justify-content-center p-5">
+                <div class="col-auto">
+                    <div class="card m-2" style="width: 18rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">Gas Concentration</h5>
+                          <h6 class="card-subtitle mb-2 text-muted" id="gas_concentration">4000 ppm</h6>
+                        </div>
+                    </div>
+
+                    <div class="card m-2" style="width: 18rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">Ultrasound Sensor 1</h5>
+                          <h6 class="card-subtitle mb-2 text-muted" id="ultrasound_sensor_1_distance">30 cm</h6>
+                        </div>
+                    </div>
+                    <div class="card m-2" style="width: 18rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">Ultrasound Sensor 2</h5>
+                          <h6 class="card-subtitle mb-2 text-muted" id="ultrasound_sensor_2_distance">29 cm</h6>
+                        </div>
+                    </div>
+
+                    <div class="card m-2" style="width: 18rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">DHT11 Humidity</h5>
+                          <h6 class="card-subtitle mb-2 text-muted"  id="dht11_humidity">17 %</h6>
+                        </div>
+    
+                        <div class="card-body">
+                          <h5 class="card-title">DHT11 Temperature</h5>
+                          <h6 class="card-subtitle mb-2 text-muted" id="dht11_temp">22 °C</h6>
+                        </div>
+                    </div>
+                </div>
+           
+
+                <div  class="col-auto d-flex align-items-stretch">
+                    <div class="card  m-2" >
+                        <img class="card-img-top" src="{{ url_for('video_feed') }}">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Live Streaming</h5>
+                            <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                        </div>
+                        <div class="card-body">
+                            <a href="#" class="card-link">Stop</a>
+                            <a href="#" class="card-link">Resume</a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div  class="col-auto d-flex align-items-stretch">
+                    <div class="card  m-2" >
+                        <img class="card-img-top" src="{{ url_for('static', filename='placeholder/term_camera.png') }}">
+
+                        <div class="card-body">
+                            <h5 class="card-title">Thermal Live Streaming</h5>
+                            <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                        </div>
+                        <div class="card-body">
+                            <a href="#" class="card-link">Stop</a>
+                            <a href="#" class="card-link">Resume</a>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

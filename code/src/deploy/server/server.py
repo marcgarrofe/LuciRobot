@@ -44,8 +44,7 @@ class Server:
         self.start_server()
 
     def start_server(self): 
-        sensors.start_reading()
-        video_output.start()
+        
  
         socketio.run(app, host='0.0.0.0', port = self.port, debug=False)
         
@@ -67,6 +66,11 @@ def get_sensors(data):
 @socketio.on("on_client")
 def on_client(data):
     print(data)
+    if data == "disconnected":
+        print("[INFO] Client disconnected")
+        video_capture.stop()
+        video_output.stop()
+
 
 @app.route('/')
 def home():
