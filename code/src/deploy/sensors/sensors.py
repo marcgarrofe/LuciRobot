@@ -3,7 +3,7 @@ import json
 
 class Sensors:
     def __init__(self, port='/dev/ttyACM0', baudrate=9600):
-        self.ser = serial.Serial(port, baudrate, timeout=0)
+        # self.ser = serial.Serial(port, baudrate, timeout=0)
 
         # ho tenim com objecte per si volem accedir desde python pero per el websocket enviare el json
         self.gas_concentration = 0.0
@@ -12,7 +12,7 @@ class Sensors:
         self.dht11_humidity = 0.0
         self.dht11_temp = 0.0
         self.json_value = ""
-        self.ser.reset_input_buffer()
+        # self.ser.reset_input_buffer()
     
     def parse_sensors(self, json_text):
         print("Parsing: " + str(json_text))

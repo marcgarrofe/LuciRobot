@@ -33,5 +33,5 @@ socket.on('receive_sensors',  function (data) {
 
 $( document ).ready(function() {
     console.log( "ready!" );
-    update();
+    // update();
 });

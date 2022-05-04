@@ -9,6 +9,10 @@ VIDEO_FORMAT = set('avi mp4 mpg mpeg mov mkv wmv'.split())
 class VideoInput(VideoBaseModule):
 
     def __init__(self, video_source, width=640, height=480,):
+        if hasattr(self, 'th') and self.th.is_alive() or hasattr(self, 'stream') and self.stream.isOpened():
+            print("[INFO] Video stream thread already started")
+            # self.stop()
+
         super().__init__()
         
         if type(video_source) is str:
@@ -21,8 +25,9 @@ class VideoInput(VideoBaseModule):
         self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
-        # while self.stream.isOpened() is False:
-        #     sleep(0.1)
+        while self.stream.isOpened() is False:
+            print("[INFO] Waiting for the video file to open...")
+            sleep(0.1)
 
         if self.stream.isOpened() is False:
             raise ValueError("Error opening the video file")
@@ -30,9 +35,15 @@ class VideoInput(VideoBaseModule):
         (self.grabbed, self.frame) = self.stream.read()
         self.stopped = False
 
+    def join(self):
+        self.th.join()
+
     def start(self):
         print("[INFO] Starting video stream thread...")
-        Thread(target=self.get, args=()).start()
+        self.th = Thread(target=self.get, args=())
+        self.th.daemon = True
+        self.th.start()
+
         if self.on_start is not None:
             self.on_start()
         return self
@@ -42,6 +53,7 @@ class VideoInput(VideoBaseModule):
             if not self.grabbed:
                 self.stop()
             else:
+                # print("[INFO] Reading frame...")
                 (self.grabbed, self.frame) = self.stream.read()
 
     def stop(self):
