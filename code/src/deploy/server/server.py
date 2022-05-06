@@ -46,7 +46,7 @@ class Server:
     def start_server(self): 
         
  
-        socketio.run(app, host='0.0.0.0', port = self.port, debug=False)
+        socketio.run(app, host='0.0.0.0', port = self.port, debug=True, use_reloader  = False)
         
     def start_thread(self):
         thread = Thread(target=self.start_server)
