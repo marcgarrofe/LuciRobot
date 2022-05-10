@@ -4,7 +4,7 @@ from flask_socketio import emit
 from flask_socketio import SocketIO
 from threading import Thread
 
-from sympy import threaded
+#from sympy import threaded
 # Bibliografía.
 # https://stackoverflow.com/questions/51970072/real-time-video-stabilization-opencv
 
@@ -16,16 +16,21 @@ socketio = SocketIO(app)
 sensors = None
 video_output = None
 video_capture = None
+pi_video_capture = None
+video_output_pi = None
 vid_fps = None
 
 class Server:
-    def __init__(self, sensors, video_capture, video_output, vid_fps, port=5000):
+    def __init__(self, sensors, video_capture, pi_video_capture, video_output, video_output_pi, port=5000):
         self.port = port
         self.sensors = sensors
 
         self.video_output = video_output
+
         self.video_capture = video_capture
-        
+        self.video_output_pi = video_output_pi
+        self.pi_video_capture = pi_video_capture
+
         self.vid_fps = vid_fps
 
     def start(self):
@@ -33,13 +38,15 @@ class Server:
         # app.run(port=self.port, debug=True)
         global sensors
         global video_output
+        global pi_video_capture
         global video_capture
-        global vid_fps
+        global video_output_pi
 
         sensors = self.sensors
         video_output = self.video_output
+        pi_video_capture = self.pi_video_capture
         video_capture = self.video_capture
-        vid_fps = self.vid_fps
+        video_output_pi = self.video_output_pi
 
         self.start_server()
 
@@ -79,4 +86,9 @@ def home():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(video_output.gen_frames(video_capture, vid_fps), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(video_output.gen_frames(video_capture), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/picamera_video_feed')
+def picamera_video_feed():
+    return Response(video_output_pi.gen_frames(pi_video_capture), mimetype='multipart/x-mixed-replace; boundary=frame')
