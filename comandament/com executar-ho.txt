@@ -1,5 +1,5 @@
+PART DEL COMANDAMENT
 https://wouterdeschuyter.be/blog/configure-a-ps3-controller-to-automatically-connect-to-a-raspberry-pi
-
 Del 1 al 3 només la primera vegada. Quan ja s'ha fet alguna connexió, només cal fer el 4
 
 1.
@@ -33,4 +33,13 @@ Iniciar mode aparellament del comandament. Apareixerà com a dispnible. Escriure
 	connect 38-C0-96-1C-49-59
 Acceptar si ho demana i escriure
 	trust 38-C0-96-1C-49-59
+Tot i que digui Failed to connect: org.bluez.Error.Failed, si el led 1 del comandametn està engegat, tot ha anat bé	
+
+
+PART WRITE SERIAL
+1. escriure la comanda ls /dev/tty*
+2. connectar l'arduino i tornar a escriure la comanda ls /dev/tty*
+3. la nova entrada és el nom del port on s'ha connectat
+4. al controller-ready.py, posar serial_port = 'nom del port', serial_is_on = True. (en cas de voler executar sense l'arduino, deixar-ho a False)
+5. Llestos.
 
