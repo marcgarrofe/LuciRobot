@@ -13,12 +13,13 @@ sudo bluetoothctl
 agent on
 default-agent
 discoverable on
+scan on
 Ho deixem obert per veure els nous dispositius disponibles.
 Iniciem aparellament del comandament per Bluetooth i apareixerà la seva MAC. Apuntar-la.
 
 3. Des d'un altre temirnal, configurar la MAC del comandament.
 Connectar per cable el comandament. 
-./sixpair B8:27:EB:31:97:DA (canviar per la MAC corresponent)
+./sixpair 38-C0-96-1C-49-59 (canviar per la MAC corresponent)
 Seguidament desconnectar el cable usb.
 
 
@@ -27,8 +28,9 @@ Seguidament desconnectar el cable usb.
 	agent on
 	default-agent
 	discoverable on
+	scan on
 Iniciar mode aparellament del comandament. Apareixerà com a dispnible. Escriure la comanda
-	connect B8:27:EB:31:97:DA 
+	connect 38-C0-96-1C-49-59
 Acceptar si ho demana i escriure
-	trust B8:27:EB:31:97:DA 
+	trust 38-C0-96-1C-49-59
 
