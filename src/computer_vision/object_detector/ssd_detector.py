@@ -5,7 +5,6 @@ import os
 GPU_SUPPORT = False
 
 dirname = os.path.dirname(__file__)
-filename = os.path.join(dirname, 'relative/path/to/file/you/want')
 
 # PROTOTXT = "model/MobileNetSSD_deploy.prototxt"
 # MODEL = "model/MobileNetSSD_deploy.caffemodel"
