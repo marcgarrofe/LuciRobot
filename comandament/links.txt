@@ -1,0 +1,3 @@
+https://create.arduino.cc/projecthub/72359/controlling-a-robot-with-a-playstation-controller-15741e
+https://pimylifeup.com/raspberry-pi-playstation-controllers/
+https://wouterdeschuyter.be/blog/configure-a-ps3-controller-to-automatically-connect-to-a-raspberry-pi
