@@ -1,0 +1,34 @@
+https://wouterdeschuyter.be/blog/configure-a-ps3-controller-to-automatically-connect-to-a-raspberry-pi
+
+Del 1 al 3 només la primera vegada. Quan ja s'ha fet alguna connexió, només cal fer el 4
+
+1.
+Abans d'executar per primera vegada és necessari instal.lar els controladors:
+brew install wget libusb libusb-compat
+wget -O sixpair.c https://gist.github.com/wouterds/4ab5715966812009d634e3d034abc7fc/raw
+gcc -o sixpair sixpair.c -lusb
+
+2. Configurar bluetooth a la raspberry
+sudo bluetoothctl
+agent on
+default-agent
+discoverable on
+Ho deixem obert per veure els nous dispositius disponibles.
+Iniciem aparellament del comandament per Bluetooth i apareixerà la seva MAC. Apuntar-la.
+
+3. Des d'un altre temirnal, configurar la MAC del comandament.
+Connectar per cable el comandament. 
+./sixpair B8:27:EB:31:97:DA (canviar per la MAC corresponent)
+Seguidament desconnectar el cable usb.
+
+
+4. Executar les següents comandes si no s'ha fet o s'han tancat
+	sudo bluetoothctl
+	agent on
+	default-agent
+	discoverable on
+Iniciar mode aparellament del comandament. Apareixerà com a dispnible. Escriure la comanda
+	connect B8:27:EB:31:97:DA 
+Acceptar si ho demana i escriure
+	trust B8:27:EB:31:97:DA 
+
