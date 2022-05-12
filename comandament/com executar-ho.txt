@@ -1,0 +1,45 @@
+PART DEL COMANDAMENT
+https://wouterdeschuyter.be/blog/configure-a-ps3-controller-to-automatically-connect-to-a-raspberry-pi
+Del 1 al 3 només la primera vegada. Quan ja s'ha fet alguna connexió, només cal fer el 4
+
+1.
+Abans d'executar per primera vegada és necessari instal.lar els controladors:
+brew install wget libusb libusb-compat
+wget -O sixpair.c https://gist.github.com/wouterds/4ab5715966812009d634e3d034abc7fc/raw
+gcc -o sixpair sixpair.c -lusb
+
+2. Configurar bluetooth a la raspberry
+sudo bluetoothctl
+agent on
+default-agent
+discoverable on
+scan on
+Ho deixem obert per veure els nous dispositius disponibles.
+Iniciem aparellament del comandament per Bluetooth i apareixerà la seva MAC. Apuntar-la.
+
+3. Des d'un altre temirnal, configurar la MAC del comandament.
+Connectar per cable el comandament. 
+./sixpair 38-C0-96-1C-49-59 (canviar per la MAC corresponent)
+Seguidament desconnectar el cable usb.
+
+
+4. Executar les següents comandes si no s'ha fet o s'han tancat
+	sudo bluetoothctl
+	agent on
+	default-agent
+	discoverable on
+	scan on
+Iniciar mode aparellament del comandament. Apareixerà com a dispnible. Escriure la comanda
+	connect 38-C0-96-1C-49-59
+Acceptar si ho demana i escriure
+	trust 38-C0-96-1C-49-59
+Tot i que digui Failed to connect: org.bluez.Error.Failed, si el led 1 del comandametn està engegat, tot ha anat bé	
+
+
+PART WRITE SERIAL
+1. escriure la comanda ls /dev/tty*
+2. connectar l'arduino i tornar a escriure la comanda ls /dev/tty*
+3. la nova entrada és el nom del port on s'ha connectat
+4. al controller-ready.py, posar serial_port = 'nom del port', serial_is_on = True. (en cas de voler executar sense l'arduino, deixar-ho a False)
+5. Llestos.
+
