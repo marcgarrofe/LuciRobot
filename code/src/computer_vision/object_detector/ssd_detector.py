@@ -1,8 +1,9 @@
 import numpy as np
 import cv2
 import os
+import time
 
-GPU_SUPPORT = False
+GPU_SUPPORT = True
 
 dirname = os.path.dirname(__file__)
 
@@ -25,10 +26,14 @@ class people_detectorSSD():
             self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
 
         self.CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus",  "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
+
         self.COLORS = np.random.uniform(0, 255, size=(len(self.CLASSES), 3))
+        print(self.COLORS)
 
 
     def scan_people(self, frame):
+        start = time.time()
+
         h, w = frame.shape[:2]
         blob = cv2.dnn.blobFromImage(frame, 0.007843, (300, 300), 127.5)
         self.net.setInput(blob)
@@ -43,4 +48,6 @@ class people_detectorSSD():
                 cv2.rectangle(frame, (startX, startY), (endX, endY),    self.COLORS[idx], 2)
                 y = startY - 15 if startY - 15 > 15 else startY + 15
                 cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.COLORS[idx], 2)
+
+        print("[INFO] SSD Time = " + str(time.time() - start))
         return frame

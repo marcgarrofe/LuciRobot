@@ -6,7 +6,8 @@ from threading import Thread
 from src.deploy.video.video_module_base import VideoBaseModule
 from src.deploy.video.video_fps import VideoFPS
 
-from src.computer_vision.object_detector.object_detector import people_detectorHOG
+from src.computer_vision.object_detector.hog_detector import people_detectorHOG
+from src.computer_vision.object_detector.ssd_detector import people_detectorSSD
 from subprocess import PIPE, Popen
 
 from gpiozero import CPUTemperature
@@ -20,13 +21,22 @@ class VideoOutput(VideoBaseModule):
     (counts) per second. The caller must increment the count.
     """
     
-    def __init__(self, frame=None, name = "Video"):
+    def __init__(self, frame=None, name = "Video", type_detector="SSD"):
         super().__init__()
         self.frame = frame
         self.stopped = False
         self.name = name
         self.vid_fps = VideoFPS().start() # inicialitzem el sistema que calcula els frames per segon
-        self.people_detectorHOG = people_detectorHOG()
+
+
+        self.type_detector = type_detector
+        if type_detector == "SSD":
+            self.people_detector = people_detectorSSD()     # Xarxa neuronal
+        elif type_detector == "HOG":
+            self.people_detector = people_detectorHOG()   # Histograma de Gradients
+        elif type_detector != "None":
+            raise ValueError("[ERROR] : Tipus de detector (type_detector) pot ser (SSD, HOG, None)")
+        
         
     def start(self):
         # Thread(target=self.show, args=()).start()
@@ -46,7 +56,7 @@ class VideoOutput(VideoBaseModule):
             if video_capture.grabbed:
                 frame = video_capture.frame # obtenim el frame de la camera
 
-                frame = self.people_detectorHOG.scan_people(frame)
+                frame = self.people_detector.scan_people(frame)
 
                 frame = self.vid_fps.put_iterations_per_sec(frame) # mostrem el frame processat
 
