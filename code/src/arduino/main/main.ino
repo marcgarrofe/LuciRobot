@@ -231,6 +231,54 @@ void motors_turn_forward( int speed_left, int speed_right)
  analogWrite (EnB, speed_right);
 }
 
+void motors_turn_backward( int speed_left, int speed_right)
+{
+  if (speed_left < 0) speed_left =0;
+  if (speed_left > 255) speed_left = 255;
+  if (speed_right < 0) speed_right =0;
+  if (speed_right > 255) speed_right = 255;
+    
+ digitalWrite (inA1, LOW);
+ digitalWrite (inA2, HIGH);
+ analogWrite (EnA, speed_left); 
+
+ digitalWrite (inB1, LOW);
+ digitalWrite (inB2, HIGH);
+ analogWrite (EnB, speed_right);
+}
+
+void motors_turn_leftforward_rightbackward( int speed_left, int speed_right)
+{
+  if (speed_left < 0) speed_left =0;
+  if (speed_left > 255) speed_left = 255;
+  if (speed_right < 0) speed_right =0;
+  if (speed_right > 255) speed_right = 255;
+    
+ digitalWrite (inA1, HIGH);
+ digitalWrite (inA2, LOW);
+ analogWrite (EnA, speed_left); 
+
+ digitalWrite (inB1, LOW);
+ digitalWrite (inB2, HIGH);
+ analogWrite (EnB, speed_right);
+}
+
+void motors_turn_rightforward_leftbackward( int speed_left, int speed_right)
+{
+  if (speed_left < 0) speed_left =0;
+  if (speed_left > 255) speed_left = 255;
+  if (speed_right < 0) speed_right =0;
+  if (speed_right > 255) speed_right = 255;
+    
+ digitalWrite (inA1, LOW);
+ digitalWrite (inA2, HIGH);
+ analogWrite (EnA, speed_left); 
+
+ digitalWrite (inB1, HIGH);
+ digitalWrite (inB2, LOW);
+ analogWrite (EnB, speed_right);
+}
+
 void motors_turn_left_still( int speed)
 {
   if (speed < 0) speed =0;
@@ -297,8 +345,20 @@ void motors_read_serial() {
       Serial.print("Right string: ");
       Serial.println(thruster_right);
 
-      //TODO: millorar el moviment dels motors. Veure els símbols de cada valors per saber quina funció cridar.
-      motors_turn_forward(thruster_left, thruster_right);
+      
+      // Mirem si es vol moure endavant o endarrere i cridem a la funció corresponent
+      if (thruster_left >= 0 && thruster_right >=0){
+       return motors_turn_forward(thruster_left, thruster_right);
+      }
+      if (thruster_left < 0 && thruster_right < 0) {
+        return motors_turn_backward(-1*thruster_left, -1*thruster_right);
+      }
+      if (thruster_left < 0) {
+        return motors_turn_leftforward_rightbackward(-1*thruster_left, thruster_right);
+      }
+      return motors_turn_rightforward_leftbackward(thruster_left, -1*thruster_right);
+      
+      
       
     }
   }
