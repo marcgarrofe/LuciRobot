@@ -6,6 +6,11 @@ from threading import Thread
 from src.deploy.video.video_module_base import VideoBaseModule
 from src.deploy.video.video_fps import VideoFPS
 
+from src.computer_vision.object_detector.object_detector import people_detectorHOG
+from subprocess import PIPE, Popen
+
+from gpiozero import CPUTemperature
+
 class VideoOutput(VideoBaseModule):
     """
     https://nrsyed.com/2018/07/05/multithreading-with-opencv-python-to-improve-video-processing-performance/
@@ -21,7 +26,7 @@ class VideoOutput(VideoBaseModule):
         self.stopped = False
         self.name = name
         self.vid_fps = VideoFPS().start() # inicialitzem el sistema que calcula els frames per segon
-
+        self.people_detectorHOG = people_detectorHOG()
         
     def start(self):
         # Thread(target=self.show, args=()).start()
@@ -29,18 +34,29 @@ class VideoOutput(VideoBaseModule):
             self.on_start()
         return self
 
+    def get_cpu_temperature(self):
+        """get cpu temperature using vcgencmd"""
+        process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE)
+        output, _error = process.communicate()
+        return float(output[output.index('=') + 1:output.rindex("'")])
+
     def gen_frames(self, video_capture):  
         while not self.stopped:
             print("[INFO] Serving video feed...")
             if video_capture.grabbed:
                 frame = video_capture.frame # obtenim el frame de la camera
-            
+
+                frame = self.people_detectorHOG.scan_people(frame)
+
                 frame = self.vid_fps.put_iterations_per_sec(frame) # mostrem el frame processat
 
                 self.frame = frame # guardem el frame processat a la sortida de video
 
                 print("[INFO] FPS: {}".format(self.vid_fps.countsPerSec()))
-                
+                cpu = CPUTemperature()
+                print(cpu.temperature)
+
+                # print(str(self.get_cpu_temperature()))
                 ret, buffer = cv2.imencode('.jpg', self.frame)
                 frame = buffer.tobytes()
                 
