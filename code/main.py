@@ -1,4 +1,6 @@
-# from src.computer_vision.video_stabilization.video_stabilization import video
+#!/usr/bin/env python
+
+#from src.computer_vision.video_stabilization.video_stabilization import video
 from src.deploy.server.server import *
 from src.deploy.sensors.sensors  import Sensors
 
@@ -27,14 +29,15 @@ def on_finish():
 # - Un per mostrar el video de la Raspberry Pi
 
 # Create a video capture object
+video_capture_pi_camera =  VideoInput('picamera', width=320, height=240) # Inicialitza el video input
+video_capture_pi_camera.on_start = on_start # Assigna la funcio on_start al event on_start
+video_capture_pi_camera.on_finish = on_finish # Assigna la funcio on_finish al event on_finish
 
-video_capture =  VideoInput(1,  width=640, height=480) # Inicialitza el video input
+
+video_capture =  VideoInput(1,  width=320, height=240) # Inicialitza el video input
 video_capture.on_start = on_start # Assigna la funcio on_start al event on_start
 video_capture.on_finish = on_finish # Assigna la funcio on_finish al event on_finish
 
-video_capture_pi_camera =  VideoInput('picamera', width=640, height=480) # Inicialitza el video input
-video_capture_pi_camera.on_start = on_start # Assigna la funcio on_start al event on_start
-video_capture_pi_camera.on_finish = on_finish # Assigna la funcio on_finish al event on_finish
 
 # Creo 2 video outputs perque els videos s'han de mostrar en 2 pantalles diferents i si nomes hi ha un 
 # thread de output  es maten entre elles XD
