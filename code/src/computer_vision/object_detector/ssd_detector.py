@@ -3,7 +3,7 @@ import cv2
 import os
 import time
 
-GPU_SUPPORT = True
+GPU_SUPPORT = False
 
 dirname = os.path.dirname(__file__)
 
