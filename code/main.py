@@ -42,11 +42,11 @@ video_capture.on_finish = on_finish # Assigna la funcio on_finish al event on_fi
 # Creo 2 video outputs perque els videos s'han de mostrar en 2 pantalles diferents i si nomes hi ha un 
 # thread de output  es maten entre elles XD
 
-video_output = VideoOutput(video_capture.frame, name = 'Hyper rapido') # inicialitzem la sortida de video
+video_output = VideoOutput(video_capture.frame, name = 'Hyper rapido', type_detector="None") # inicialitzem la sortida de video
 video_output.on_start = None # assignem el metode on_start que es cridara al iniciar la sortida de video
 video_output.on_finish = on_finish # assignem el metode on_finish a la classe VideoOutput per a que es cridi quan acabi el video o cliquem la lletra q
 
-video_output_pi = VideoOutput(video_capture.frame, name = 'Hyper rapido') # inicialitzem la sortida de video
+video_output_pi = VideoOutput(video_capture.frame, name = 'Hyper rapido', type_detector="None") # inicialitzem la sortida de video
 video_output_pi.on_start = None # assignem el metode on_start que es cridara al iniciar la sortida de video
 video_output_pi.on_finish = on_finish # assignem el metode on_finish a la classe VideoOutput per a que es cridi quan acabi el video o cliquem la lletra q
 

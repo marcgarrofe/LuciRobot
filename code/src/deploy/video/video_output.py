@@ -56,7 +56,9 @@ class VideoOutput(VideoBaseModule):
             if video_capture.grabbed:
                 frame = video_capture.frame # obtenim el frame de la camera
 
-                frame = self.people_detector.scan_people(frame)
+
+                if self.type_detector != "None":
+                    frame = self.people_detector.scan_people(frame)
 
                 frame = self.vid_fps.put_iterations_per_sec(frame) # mostrem el frame processat
 
