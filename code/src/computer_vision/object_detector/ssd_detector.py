@@ -27,12 +27,16 @@ class people_detectorSSD():
 
         self.CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus",  "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
 
+        self.return_directions = False
+
         self.COLORS = np.random.uniform(0, 255, size=(len(self.CLASSES), 3))
         print(self.COLORS)
 
 
     def scan_people(self, frame):
         start = time.time()
+
+        list_directions = list()
 
         h, w = frame.shape[:2]
         blob = cv2.dnn.blobFromImage(frame, 0.007843, (300, 300), 127.5)
@@ -45,9 +49,25 @@ class people_detectorSSD():
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                 (startX, startY, endX, endY) = box.astype("int")
                 label = "{}: {:.2f}%".format(self.CLASSES[idx],confidence*100)
+
+                # Si es detecten persones, afegeix les direccions al array de persones
+                if self.CLASSES[idx] == 'person':
+                    # Calculem el centre
+                    centreX = (endX - startX) / 2 + startX
+                    # Quantifiquem el desplaçament en 100% i amb signe per indicar si es dret o esquerre
+                    percentatge_movimentX = 100 - centreX * 100 / (w / 2)
+                    # Afegim el moviment en un array per si hi haguessin mes d'un subjecte
+                    list_directions.append(percentatge_movimentX)
+
                 cv2.rectangle(frame, (startX, startY), (endX, endY),    self.COLORS[idx], 2)
                 y = startY - 15 if startY - 15 > 15 else startY + 15
                 cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.COLORS[idx], 2)
 
-        print("[INFO] SSD Time = " + str(time.time() - start))
+        # print("[INFO] SSD Time = " + str(time.time() - start))
+
+        # Es calcula la mitjana dels moviments:
+        list_directions = np.average(np.array(list_directions))
+        print(list_directions)
+
+
         return frame
