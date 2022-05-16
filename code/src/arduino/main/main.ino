@@ -266,7 +266,7 @@ DynamicJsonDocument doc(1024);
 void loop() {
   // Delay between measurements.
   delay(delayMS);
-
+  motors_turn_forward(150,150);
   float dht11_temp = readDHTTemp();
   float dht11_humidity = readDHTHumidity();
 
