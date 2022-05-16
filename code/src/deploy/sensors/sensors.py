@@ -2,8 +2,9 @@ import serial
 import json 
 
 class Sensors:
-    def __init__(self, port='/dev/ttyACM0', baudrate=9600):
-        # self.ser = serial.Serial(port, baudrate, timeout=0)
+    def __init__(self, port='/dev/ttyACM0', baudrate=9600, read_sensors = False):
+        if read_sensors:
+            self.ser = serial.Serial(port, baudrate, timeout=0)
 
         # ho tenim com objecte per si volem accedir desde python pero per el websocket enviare el json
         self.gas_concentration = 0.0

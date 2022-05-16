@@ -104,6 +104,8 @@ class VideoInput(VideoBaseModule):
 
         if not self.is_picamera and self.stream.isOpened():
             self.stream.release()
+        else:
+            self.stream.close()
 
         if self.on_finish is not None and not self.called:
             self.called = True
@@ -116,3 +118,6 @@ class VideoInput(VideoBaseModule):
     def __del__(self):
         if not self.is_picamera and self.stream.isOpened():
             self.stream.release()
+        else:
+            if hasattr(self, 'stream'):
+                self.stream.close()

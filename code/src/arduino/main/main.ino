@@ -24,6 +24,13 @@
 #define inA1 10
 #define inA2 13
 
+// MOTOR VARIABLES
+String inString = "";    // concatenació de tota la instrucció
+int inChar = 0;          // valor rebut actualment
+int thruster_left;       // valor motor esquerra
+int thruster_right;      // valor motor dret
+int save_as_second = false; // flag per saber a quin motor guardar el valor
+
 // ULTRASOUND SENSOR 1
 #define UltraSoundTrigPin_1 7
 #define UltraSoundEchoPin_1 3
@@ -224,6 +231,54 @@ void motors_turn_forward( int speed_left, int speed_right)
  analogWrite (EnB, speed_right);
 }
 
+void motors_turn_backward( int speed_left, int speed_right)
+{
+  if (speed_left < 0) speed_left =0;
+  if (speed_left > 255) speed_left = 255;
+  if (speed_right < 0) speed_right =0;
+  if (speed_right > 255) speed_right = 255;
+    
+ digitalWrite (inA1, LOW);
+ digitalWrite (inA2, HIGH);
+ analogWrite (EnA, speed_left); 
+
+ digitalWrite (inB1, LOW);
+ digitalWrite (inB2, HIGH);
+ analogWrite (EnB, speed_right);
+}
+
+void motors_turn_leftforward_rightbackward( int speed_left, int speed_right)
+{
+  if (speed_left < 0) speed_left =0;
+  if (speed_left > 255) speed_left = 255;
+  if (speed_right < 0) speed_right =0;
+  if (speed_right > 255) speed_right = 255;
+    
+ digitalWrite (inA1, HIGH);
+ digitalWrite (inA2, LOW);
+ analogWrite (EnA, speed_left); 
+
+ digitalWrite (inB1, LOW);
+ digitalWrite (inB2, HIGH);
+ analogWrite (EnB, speed_right);
+}
+
+void motors_turn_rightforward_leftbackward( int speed_left, int speed_right)
+{
+  if (speed_left < 0) speed_left =0;
+  if (speed_left > 255) speed_left = 255;
+  if (speed_right < 0) speed_right =0;
+  if (speed_right > 255) speed_right = 255;
+    
+ digitalWrite (inA1, LOW);
+ digitalWrite (inA2, HIGH);
+ analogWrite (EnA, speed_left); 
+
+ digitalWrite (inB1, HIGH);
+ digitalWrite (inB2, LOW);
+ analogWrite (EnB, speed_right);
+}
+
 void motors_turn_left_still( int speed)
 {
   if (speed < 0) speed =0;
@@ -261,10 +316,60 @@ void motors_stop()
  analogWrite (EnB, 0);
 }
 
+void motors_read_serial() {
+  // El serial read funciona amb el format "10,0;" (sense les cometes).
+  // L'exemple significa que el motor esquerra va a velocitat 10 i el dret a velocitat 0.
+  
+  /// Read serial data
+  if (Serial.available()) {  // si serial data està disponible
+    inChar = Serial.read();  // guardem l'últim byte
+    inString += char(inChar);// concatenem
+        
+    /// quan detectem una coma, guardem el valor i l'assignem a left
+    if (inChar == ',') {
+      if (save_as_second == false) { 
+        thruster_left = inString.toInt(); 
+        inString = "";               
+        save_as_second == true;      
+      }
+    }
+    /// al detectar una semicolon, guardem l'últim valor a Right
+    if (inChar == ';') {     
+      thruster_right = inString.toInt();
+      inString = "";        
+      save_as_second = false;
+
+      /// Ja tenim tots els valors necessaris, movem el motor
+      Serial.print("Left Thruster:"); 
+      Serial.println(thruster_left);
+      Serial.print("Right string: ");
+      Serial.println(thruster_right);
+
+      
+      // Mirem si es vol moure endavant o endarrere i cridem a la funció corresponent
+      if (thruster_left >= 0 && thruster_right >=0){
+       return motors_turn_forward(thruster_left, thruster_right);
+      }
+      if (thruster_left < 0 && thruster_right < 0) {
+        return motors_turn_backward(-1*thruster_left, -1*thruster_right);
+      }
+      if (thruster_left < 0) {
+        return motors_turn_leftforward_rightbackward(-1*thruster_left, thruster_right);
+      }
+      return motors_turn_rightforward_leftbackward(thruster_left, -1*thruster_right);
+      
+      
+      
+    }
+  }
+}
+
 DynamicJsonDocument doc(1024);
 
 void loop() {
+  motors_read_serial();
   // Delay between measurements.
+  /*
   delay(delayMS);
   motors_turn_forward(150,150);
   float dht11_temp = readDHTTemp();
@@ -284,4 +389,5 @@ void loop() {
 
   serializeJson(doc, Serial);
   Serial.println("");
+  */
 }

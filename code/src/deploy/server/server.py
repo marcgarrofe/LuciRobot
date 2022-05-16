@@ -4,6 +4,7 @@ from flask_socketio import emit
 from flask_socketio import SocketIO
 from threading import Thread
 
+
 #from sympy import threaded
 # Bibliografía.
 # https://stackoverflow.com/questions/51970072/real-time-video-stabilization-opencv
@@ -21,7 +22,7 @@ video_output_pi = None
 vid_fps = None
 
 class Server:
-    def __init__(self, sensors, video_capture, pi_video_capture, video_output, video_output_pi, port=5000):
+    def __init__(self, sensors, video_capture, pi_video_capture, video_output, video_output_pi, port=5000, read_sensors = False):
         self.port = port
         self.sensors = sensors
 
@@ -32,6 +33,7 @@ class Server:
         self.pi_video_capture = pi_video_capture
 
         self.vid_fps = vid_fps
+        self.read_sensors = read_sensors
 
     def start(self):
         print("[INFO] Starting server...")
@@ -58,6 +60,8 @@ class Server:
     def start_thread(self):
         thread = Thread(target=self.start_server)
         thread.start()
+
+
 
 
 @socketio.on("get_sensors")
