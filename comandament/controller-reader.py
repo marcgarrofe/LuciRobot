@@ -12,7 +12,7 @@ print ('Detected controller : %s' % j.get_name() )
 
 ### 2: Obrim canal serial amb l'arduino
 
-serial_is_on = False                            # Deixar en False si l'arduino no està connectada
+serial_is_on = True                            # Deixar en False si l'arduino no està connectada
 serial_port = '/dev/ttyACM0'			        # nom del port on està connectada l'arduino. Es veu mitjançant la comanda ls /dev/tty*
 baud_rate = 9600					              # ni idea què és, però ha de ser el mateix número que el que hi ha al setup de l'arduino
 
@@ -29,19 +29,21 @@ if serial_is_on == True:                          # objecte que representa la co
 # 4 -> R vertical
 # 0 -> L horitzontal
 # 5 -> R2   
-axes_to_check = [0,5]
-check_frequency = 5
-breakout_button = 3                             #-# Botó que apaga el programa. Actualment és el Quadrat
+axes_to_check = [0,5,2]                         # botons a llegir del comandament
+check_frequency = 5                             # vegades que llegim per segon
+breakout_button = 3                             # Botó que apaga el programa. Actualment és el Quadrat
 
 #############################
 ### 4: Llegim input del comandament
 
 while True:
 
-    pygame.event.pump()			                  # És un trigger per cada co pque hi ha un nou event
+    pygame.event.pump()			                  # És un trigger per cada cop que hi ha un nou event
     recent_values = []		                      # Es guarden els valors per després enviar-los per serial
-    throttle = 0
-    turn = 0
+    throttle = 0                                  # valor per l'accelerador, entre 0 i 255
+    turn = 0                                      # valor per girar, -1 a l'esquerra, 0 recte, 1 a l'esquerra
+    endavant = 1                                  # multiplica el valor final dels motors
+    
     for current_axis in axes_to_check:	          # Anem fent loop pels Axes per comprovar-los
         latest_value = j.get_axis(current_axis)	  # Guardem l'últim valor
                                                   # evitem fer print quan el Axis està en posició de repós
@@ -50,10 +52,14 @@ while True:
                                                   # Sincerament ni idea dels càlculs, però els passem a un valor entre 0 i 200
         multiplicador = 100
         #value_mod = 0
-        if current_axis == 5 or current_axis == 2:
+        if current_axis == 2:
+            endavant = -1                         # si s'apreta L2, el resultat final serà negatiu i anirà cap endarrere
+        if current_axis == 5 or current_axis == 2:# L2 o R2
             multiplicador = 127;
-            throttle = int(round(latest_value*multiplicador,2)+multiplicador)
-        else:
+            throttle = int(round(latest_value*multiplicador,2)+multiplicador) * endavant
+            if throttle != 0:                     # si ja ha passat per un accelerador activat, o cal veure l'altre durant aquesta iteració.
+                break; 
+        else:                                     # L horitzontal
             turn = latest_value
         #value_mod = int(round(latest_value*multiplicador,2))
         #value_mod = str(value_mod)                # Convertim a string
@@ -61,14 +67,14 @@ while True:
     
     left = throttle
     right = throttle
-    if turn > 0:
+    if turn > 0:                                  # càlcul de les veolictats de cada motor.
         right = int(right * (1-turn))
     if turn < 0:
         left = int(left * (1-abs(turn)))
     #print(turn, left, right)
         
         
-    recent_values.append(str(left))
+    recent_values.append(str(left))                 # afegirm les velocitats a la llista
     recent_values.append(str(right))
     
     
