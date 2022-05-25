@@ -4,3 +4,5 @@ pyserial
 numpy
 opencv-python       
 vidgear[core]
+imagezmq
+paho-mqtt

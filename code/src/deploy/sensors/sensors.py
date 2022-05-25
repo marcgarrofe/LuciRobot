@@ -1,10 +1,19 @@
 import serial
 import json 
+from paho.mqtt import client as mqtt_client
 
 class Sensors:
-    def __init__(self, port='/dev/ttyACM0', baudrate=9600, read_sensors = False):
-        if read_sensors:
+    def __init__(self, port='/dev/ttyACM0', baudrate=9600, use_mqtt = False, broker = 'localhost', port_mqtt = 1883):
+
+        self.use_mqtt = use_mqtt
+        # We read the sensors from the arduino serial port or the mqtt broker
+        if use_mqtt:
             self.ser = serial.Serial(port, baudrate, timeout=0)
+        else:
+            self.broker = broker 
+            self.port = port_mqtt
+            self.topic = "/luci/sensors"
+            self.mqtt_client.loop_start()
 
         # ho tenim com objecte per si volem accedir desde python pero per el websocket enviare el json
         self.gas_concentration = 0.0
@@ -15,6 +24,33 @@ class Sensors:
         self.json_value = ""
         # self.ser.reset_input_buffer()
     
+
+    """
+    Es subscribe a luci/sensors i reb els valors dels sensors 
+    """
+    def subscribe(self, client: mqtt_client):
+        def on_message(client, userdata, msg):
+            print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+
+        client.subscribe(self.topic)
+        client.on_message = on_message
+
+    """
+    Es conecta al raspberry per mqtt per rebre els valors dels sensors
+    """
+    def connect_mqtt(self) -> mqtt_client:
+        def on_connect(client, userdata, flags, rc):
+            if rc == 0:
+                print("Connected to MQTT Broker!")
+            else:
+                print("Failed to connect, return code %d\n", rc)
+
+        client = mqtt_client.Client()
+        # client.username_pw_set(username, password)
+        client.on_connect = on_connect
+        client.connect(self.broker, self.port)
+        return client
+
     def parse_sensors(self, json_text):
         print("Parsing: " + str(json_text))
         print(len(json_text))
@@ -44,9 +80,8 @@ class Sensors:
         return str(app_json)
 
     def start_reading(self):
-        # while True:
-        #     self.read_sensors()
-        print("gello")
+        if self.use_mqtt:
+            self.connect_mqtt()
 
     def read_sensors(self):
         #if self.ser.in_waiting > 0:

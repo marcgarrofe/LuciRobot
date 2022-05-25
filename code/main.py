@@ -22,6 +22,18 @@ def on_finish():
 
     return
 
+
+"""
+Si la idea es que tot funcioni en el pc del client potser no fan falta threads per accedir a les imatges de la càmera
+
+"""
+use_threads = False
+
+"""
+Aixó es per probar que el client del pc rebi les dades de les sensors del robot raspberry a distancia
+"""
+use_mqtt = True
+
 # Tenim 4 threads
 # - Un per captura de video de webcam
 # - Un per captura de video de Raspberry Pi
@@ -29,12 +41,12 @@ def on_finish():
 # - Un per mostrar el video de la Raspberry Pi
 
 # Create a video capture object
-video_capture_pi_camera =  VideoInput('picamera', width=320, height=240) # Inicialitza el video input
+video_capture_pi_camera =  VideoInput('picamera', width=320, height=240, use_sockets=True, use_threads=use_threads) # Inicialitza el video input
 video_capture_pi_camera.on_start = on_start # Assigna la funcio on_start al event on_start
 video_capture_pi_camera.on_finish = on_finish # Assigna la funcio on_finish al event on_finish
 
 
-video_capture =  VideoInput(1,  width=320, height=240) # Inicialitza el video input
+video_capture =  VideoInput(1,  width=320, height=240, use_sockets=True, use_threads=use_threads) # Inicialitza el video input
 video_capture.on_start = on_start # Assigna la funcio on_start al event on_start
 video_capture.on_finish = on_finish # Assigna la funcio on_finish al event on_finish
 
@@ -42,16 +54,16 @@ video_capture.on_finish = on_finish # Assigna la funcio on_finish al event on_fi
 # Creo 2 video outputs perque els videos s'han de mostrar en 2 pantalles diferents i si nomes hi ha un 
 # thread de output  es maten entre elles XD
 
-video_output = VideoOutput(video_capture.frame, name = 'Hyper rapido', type_detector="None") # inicialitzem la sortida de video
+video_output = VideoOutput(video_capture.frame, name = 'Hyper rapido', type_detector="None", use_threads=use_threads) # inicialitzem la sortida de video
 video_output.on_start = None # assignem el metode on_start que es cridara al iniciar la sortida de video
 video_output.on_finish = on_finish # assignem el metode on_finish a la classe VideoOutput per a que es cridi quan acabi el video o cliquem la lletra q
 
-video_output_pi = VideoOutput(video_capture.frame, name = 'Hyper rapido', type_detector="None") # inicialitzem la sortida de video
+video_output_pi = VideoOutput(video_capture.frame, name = 'Hyper rapido', type_detector="None", use_threads=use_threads) # inicialitzem la sortida de video
 video_output_pi.on_start = None # assignem el metode on_start que es cridara al iniciar la sortida de video
 video_output_pi.on_finish = on_finish # assignem el metode on_finish a la classe VideoOutput per a que es cridi quan acabi el video o cliquem la lletra q
 
 
-sensors = Sensors() # inicialitzem els sensors
+sensors = Sensors(use_mqtt=use_mqtt) # inicialitzem els sensors
 server = Server(sensors, video_capture, video_capture_pi_camera,  video_output, video_output_pi) # inicialitzem el servidor
 
 video_capture.start() # inicialitzem la captura de video de la camera

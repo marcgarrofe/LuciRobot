@@ -3,6 +3,8 @@ import argparse
 import cv2
 from threading import Thread
 
+from sqlalchemy import false
+
 from src.deploy.video.video_module_base import VideoBaseModule
 from src.deploy.video.video_fps import VideoFPS
 
@@ -21,10 +23,11 @@ class VideoOutput(VideoBaseModule):
     (counts) per second. The caller must increment the count.
     """
     
-    def __init__(self, frame=None, name = "Video", type_detector="SSD"):
+    def __init__(self, frame=None, name = "Video", type_detector="SSD", use_threads=False):
         super().__init__()
         self.frame = frame
         self.stopped = False
+        self.use_threads = use_threads
         self.name = name
         self.vid_fps = VideoFPS().start() # inicialitzem el sistema que calcula els frames per segon
 
@@ -54,6 +57,10 @@ class VideoOutput(VideoBaseModule):
         while not self.stopped:
             print("[INFO] Serving video feed...")
             if video_capture.grabbed:
+
+                if not self.use_threads:
+                    video_capture.get_frame() 
+
                 frame = video_capture.frame # obtenim el frame de la camera
 
 
