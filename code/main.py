@@ -34,7 +34,7 @@ def on_finish():
 # video_capture_pi_camera.on_finish = on_finish # Assigna la funcio on_finish al event on_finish
 
 
-video_capture =  VideoInput(1,  width=320, height=240) # Inicialitza el video input
+video_capture =  VideoInput(0,  width=320, height=240) # Inicialitza el video input
 video_capture.on_start = on_start # Assigna la funcio on_start al event on_start
 video_capture.on_finish = on_finish # Assigna la funcio on_finish al event on_finish
 
