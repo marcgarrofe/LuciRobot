@@ -1,5 +1,7 @@
 var socket = io();
 
+var sensors_dict = {"gas_concentration":Array.apply(0, Array(180)), "ultrasound_sensor_1_distance":Array.apply(0, Array(180)),"ultrasound_sensor_2_distance":Array.apply(0, Array(180)),"dht11_humidity":Array.apply(0, Array(180)),"dht11_temp":Array.apply(0, Array(180)) }
+
 socket.on('connect', function() {
     socket.emit('on_client', {data: 'connected'});
 });
@@ -27,6 +29,7 @@ socket.on('receive_sensors',  function (data) {
     Object.keys(sensors).forEach(function(key) {
         var sensor_value = sensors[key];
         $('#' + key).html(sensor_value);
+		sensors_dict[key].push(sensor_value);
     });
 });
 
@@ -60,7 +63,7 @@ $( document ).ready(function() {
             labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
             datasets: [{
                 label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
+                data: sensors_dict[recipient],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
