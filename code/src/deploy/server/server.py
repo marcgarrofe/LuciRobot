@@ -22,15 +22,15 @@ video_output_pi = None
 vid_fps = None
 
 class Server:
-    def __init__(self, sensors, video_capture, pi_video_capture, video_output, video_output_pi, port=5000, read_sensors = False):
+    def __init__(self, sensors, video_capture, video_output, port=5000, read_sensors = False):
         self.port = port
         self.sensors = sensors
 
         self.video_output = video_output
 
         self.video_capture = video_capture
-        self.video_output_pi = video_output_pi
-        self.pi_video_capture = pi_video_capture
+        # self.video_output_pi = video_output_pi
+        # self.pi_video_capture = pi_video_capture
 
         self.vid_fps = vid_fps
         self.read_sensors = read_sensors
@@ -40,15 +40,15 @@ class Server:
         # app.run(port=self.port, debug=True)
         global sensors
         global video_output
-        global pi_video_capture
+        # global pi_video_capture
         global video_capture
-        global video_output_pi
+        # global video_output_pi
 
         sensors = self.sensors
         video_output = self.video_output
-        pi_video_capture = self.pi_video_capture
+        # pi_video_capture = self.pi_video_capture
         video_capture = self.video_capture
-        video_output_pi = self.video_output_pi
+        # video_output_pi = self.video_output_pi
 
         self.start_server()
 
@@ -95,4 +95,4 @@ def video_feed():
 
 @app.route('/picamera_video_feed')
 def picamera_video_feed():
-    return Response(video_output_pi.gen_frames(pi_video_capture), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(video_output.gen_frames(pi_video_capture), mimetype='multipart/x-mixed-replace; boundary=frame')

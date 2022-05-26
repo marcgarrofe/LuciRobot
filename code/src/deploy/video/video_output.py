@@ -10,7 +10,8 @@ from src.computer_vision.object_detector.hog_detector import people_detectorHOG
 from src.computer_vision.object_detector.ssd_detector import people_detectorSSD
 from subprocess import PIPE, Popen
 
-from gpiozero import CPUTemperature
+# from gpiozero import CPUTemperature 
+
 
 class VideoOutput(VideoBaseModule):
     """

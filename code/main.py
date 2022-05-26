@@ -29,9 +29,9 @@ def on_finish():
 # - Un per mostrar el video de la Raspberry Pi
 
 # Create a video capture object
-video_capture_pi_camera =  VideoInput('picamera', width=320, height=240) # Inicialitza el video input
-video_capture_pi_camera.on_start = on_start # Assigna la funcio on_start al event on_start
-video_capture_pi_camera.on_finish = on_finish # Assigna la funcio on_finish al event on_finish
+# video_capture_pi_camera =  VideoInput('picamera', width=320, height=240) # Inicialitza el video input
+# video_capture_pi_camera.on_start = on_start # Assigna la funcio on_start al event on_start
+# video_capture_pi_camera.on_finish = on_finish # Assigna la funcio on_finish al event on_finish
 
 
 video_capture =  VideoInput(1,  width=320, height=240) # Inicialitza el video input
@@ -46,17 +46,17 @@ video_output = VideoOutput(video_capture.frame, name = 'Hyper rapido', type_dete
 video_output.on_start = None # assignem el metode on_start que es cridara al iniciar la sortida de video
 video_output.on_finish = on_finish # assignem el metode on_finish a la classe VideoOutput per a que es cridi quan acabi el video o cliquem la lletra q
 
-video_output_pi = VideoOutput(video_capture.frame, name = 'Hyper rapido', type_detector="None") # inicialitzem la sortida de video
-video_output_pi.on_start = None # assignem el metode on_start que es cridara al iniciar la sortida de video
-video_output_pi.on_finish = on_finish # assignem el metode on_finish a la classe VideoOutput per a que es cridi quan acabi el video o cliquem la lletra q
+# video_output_pi = VideoOutput(video_capture.frame, name = 'Hyper rapido', type_detector="None") # inicialitzem la sortida de video
+# video_output_pi.on_start = None # assignem el metode on_start que es cridara al iniciar la sortida de video
+# video_output_pi.on_finish = on_finish # assignem el metode on_finish a la classe VideoOutput per a que es cridi quan acabi el video o cliquem la lletra q
 
 
 sensors = Sensors() # inicialitzem els sensors
-server = Server(sensors, video_capture, video_capture_pi_camera,  video_output, video_output_pi) # inicialitzem el servidor
+server = Server(sensors, video_capture,  video_output) # inicialitzem el servidor
 
-video_capture.start() # inicialitzem la captura de video de la camera
-video_capture_pi_camera.start()
-video_output.start() # inicialitzem la sortida de video
+# video_capture.start() # inicialitzem la captura de video de la camera
+# video_capture_pi_camera.start()
+# video_output.start() # inicialitzem la sortida de video
 
 sensors.start_reading()
 server.start()

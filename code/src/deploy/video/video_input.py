@@ -1,8 +1,10 @@
 import cv2
 from threading import Thread
 
-from picamera.array import PiRGBArray
-from picamera import PiCamera
+# check if it is raspberry pi
+import os
+# from picamera.array import PiRGBArray
+# from picamera import PiCamera
 
 from src.deploy.video.video_module_base import VideoBaseModule
 from time import sleep
@@ -116,7 +118,7 @@ class VideoInput(VideoBaseModule):
         return self.stream.isOpened()
 
     def __del__(self):
-        if not self.is_picamera and self.stream.isOpened():
+        if hasattr(self, 'is_picamera') and not self.is_picamera and self.stream.isOpened():
             self.stream.release()
         else:
             if hasattr(self, 'stream'):
