@@ -1,6 +1,8 @@
 var socket = io();
 
-var sensors_dict = {"gas_concentration":Array.apply(0, Array(180)), "ultrasound_sensor_1_distance":Array.apply(0, Array(180)),"ultrasound_sensor_2_distance":Array.apply(0, Array(180)),"dht11_humidity":Array.apply(0, Array(180)),"dht11_temp":Array.apply(0, Array(180)) }
+var sensors_dict = {"gas_concentration":Array.apply(0, Array(60)), "ultrasound_sensor_1_distance":Array.apply(0, Array(60)),"ultrasound_sensor_2_distance":Array.apply(0, Array(60)),"dht11_humidity":Array.apply(0, Array(60)),"dht11_temp":Array.apply(0, Array(60)) }
+var xAxis = Array.from({length: 60}, (_, i) => i + 1);
+//var sensor1 = [60,20,30,55,30,1000,40]	// Solo usado para hardcodear resultados
 
 socket.on('connect', function() {
     socket.emit('on_client', {data: 'connected'});
@@ -29,7 +31,12 @@ socket.on('receive_sensors',  function (data) {
     Object.keys(sensors).forEach(function(key) {
         var sensor_value = sensors[key];
         $('#' + key).html(sensor_value);
-		sensors_dict[key].push(sensor_value);
+		
+		// if size of array >60 we delete the first element
+		if(sensors_dict[key].push(sensor_value) >= 60){
+			sensors_dict[key].shift();
+		}
+		
     });
 });
 
@@ -57,40 +64,27 @@ $( document ).ready(function() {
 
     const ctx = document.getElementById('myChart').getContext('2d');
     
-    const myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: sensors_dict[recipient],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+	// PROBLEMA: El recipient únicamente existe en la variable exampleModal, cómo puedo sacarlo de ahí?
+    const myChart = new Chart(document.getElementById("myChart"), {
+  type: 'line',
+  data: {
+    labels: xAxis,
+    datasets: [{ 
+		// Mostrará la data de los últimos 60 segundos del sensor
+        data: sensors_dict[recipient], //También puede ser que sea modalBodyInput pero tampoco lo sé
+        label: recipient, // También puede ser que sea modalTitle pero no lo sé
+        borderColor: "#3e95cd",
+        fill: false
+      },
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'World population per region (in millions)'
+    }
+  }
+});
 });
 
 
