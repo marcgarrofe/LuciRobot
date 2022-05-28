@@ -13,6 +13,8 @@ from google.cloud import speech
 import pyaudio
 from six.moves import queue
 
+import json
+
 # Audio recording parameters
 RATE = 16000
 CHUNK = int(RATE / 10)  # 100ms
@@ -144,6 +146,9 @@ def main():
     language_code = "es-ES"
 
     client = speech.SpeechClient()
+    
+    # The JSON dictionary
+    responses_json = {}
 
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
@@ -163,6 +168,11 @@ def main():
         )
 
         responses = client.streaming_recognize(streaming_config, requests)
+        
+        # We save the "responses" variable in a JSON file
+        responses_json['text'] = responses
+        with open('response.json', 'w') as outfile:
+            json.dump(responses_json, outfile)
 
         # Now, put the transcription responses to use.
         listen_print_loop(responses)
