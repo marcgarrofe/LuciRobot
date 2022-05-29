@@ -58,7 +58,9 @@
                     <div class="card m-2 text-white bg-primary" style="width: 20rem;">
                         <div class="card-body">
                             <div class="row">
-                                 <h2 class="card-title">Robot sensors</h2>
+                                 <h2 class="card-title">Robot sensors <span class="material-symbols-outlined">
+                                    sensors
+                                    </span></h2>
 
                             </div>
                         </div>
@@ -176,21 +178,36 @@
 
                 </div>
 
-                <div  class="col-auto">
-                    <div class="card  m-2" >
-                        <!-- <img class="card-img-top" src="{{ url_for('static', filename='placeholder/term_camera.png') }}"> -->
-                        <img class="card-img-top" width="200" src="{{ url_for('picamera_video_feed') }}">
-
+                <div class="col-auto card-deck">
+                    <div class="card m-2 text-white bg-primary" style="width: 20rem;">
                         <div class="card-body">
-                            <h5 class="card-title">Thermal Live Streaming</h5>
-                            <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-                        </div>
-                        <div class="card-body">
-                            <a href="#" class="card-link">Stop</a>
-                            <a href="#" class="card-link">Resume</a>
+                            <div class="row">
+                                 <h2 class="card-title">Live Transcript <span class="material-symbols-outlined">
+                                    record_voice_over
+                                    </span> </h2>
+                                 
+                            </div>
                         </div>
                     </div>
 
+                    <div class="card m-2" style="width: 20rem;">
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- timestamp - and text -->
+                                <div class="col">
+                                    <h5 class="card-title">Timestamp</h5>
+                                    
+                                    <div class="row">
+                                        <h6 class="card-subtitle mb-2 text-muted" id="timestamp">00:00:00</h6>
+                                        <h6> - </h6>
+                                        <h6 class="card-subtitle mb-2 text-muted" id="timestamp_end">00:00:00</h6>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>             
+                    </div>
+                    
                 </div>
             </div>
         </div>
