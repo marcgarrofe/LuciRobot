@@ -6,3 +6,5 @@ opencv-python
 vidgear[core]
 imagezmq
 paho-mqtt
+flask-mqtt
+redis

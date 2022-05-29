@@ -12,7 +12,7 @@ from src.computer_vision.object_detector.hog_detector import people_detectorHOG
 from src.computer_vision.object_detector.ssd_detector import people_detectorSSD
 from subprocess import PIPE, Popen
 
-from gpiozero import CPUTemperature
+# from gpiozero import CPUTemperature
 
 class VideoOutput(VideoBaseModule):
     """
@@ -23,11 +23,12 @@ class VideoOutput(VideoBaseModule):
     (counts) per second. The caller must increment the count.
     """
     
-    def __init__(self, frame=None, name = "Video", type_detector="SSD", use_threads=False):
+    def __init__(self, frame=None, name = "Video", type_detector="SSD", use_threads=False, use_sockets= False, on_start=None, on_finish=None):
         super().__init__()
         self.frame = frame
         self.stopped = False
         self.use_threads = use_threads
+        self.use_sockets = use_sockets
         self.name = name
         self.vid_fps = VideoFPS().start() # inicialitzem el sistema que calcula els frames per segon
 
@@ -55,7 +56,7 @@ class VideoOutput(VideoBaseModule):
 
     def gen_frames(self, video_capture):  
         while not self.stopped:
-            print("[INFO] Serving video feed...")
+            # print("[INFO] Serving video feed...")
             if video_capture.grabbed:
 
                 if not self.use_threads:
@@ -63,26 +64,26 @@ class VideoOutput(VideoBaseModule):
 
                 frame = video_capture.frame # obtenim el frame de la camera
 
-
                 if self.type_detector != "None":
                     frame = self.people_detector.scan_people(frame)
 
-                frame = self.vid_fps.put_iterations_per_sec(frame) # mostrem el frame processat
+                # frame = self.vid_fps.put_iterations_per_sec(frame) # mostrem el frame processat
 
                 self.frame = frame # guardem el frame processat a la sortida de video
 
-                print("[INFO] FPS: {}".format(self.vid_fps.countsPerSec()))
-                cpu = CPUTemperature()
-                print(cpu.temperature)
+                # print("[INFO] FPS: {}".format(self.vid_fps.countsPerSec()))
+                # cpu = CPUTemperature()
+                # print(cpu.temperature)
 
                 # print(str(self.get_cpu_temperature()))
+
                 ret, buffer = cv2.imencode('.jpg', self.frame)
                 frame = buffer.tobytes()
                 
                 yield (b'--frame\r\n'
                     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
-                self.vid_fps.increment()
+                # self.vid_fps.increment()
             else:
                 frame = None
                 print("[INFO] No frame to show")

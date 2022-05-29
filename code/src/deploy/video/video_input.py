@@ -1,8 +1,8 @@
 import cv2
 from threading import Thread
 
-from picamera.array import PiRGBArray
-from picamera import PiCamera
+
+
 
 from src.deploy.video.video_module_base import VideoBaseModule
 from time import sleep
@@ -14,7 +14,7 @@ VIDEO_FORMAT = set('avi mp4 mpg mpeg mov mkv wmv'.split())
 
 class VideoInput(VideoBaseModule):
 
-    def __init__(self, video_source, width=640, height=480, use_sockets = False, use_threads = False):
+    def __init__(self, video_source, width=640, height=480, use_sockets = False , open_port='tcp://*:5555', use_threads = False):
         if hasattr(self, 'th') and self.th.is_alive() or hasattr(self, 'stream') and self.stream.isOpened():
             print("[INFO] Video stream thread already started")
             # self.stop()
@@ -24,7 +24,27 @@ class VideoInput(VideoBaseModule):
         self.use_threads = use_threads
 
         if use_sockets:
-            self.image_hub = imagezmq.ImageHub()
+            self.image_hub = imagezmq.ImageHub(open_port = open_port)
+
+            # img = np.empty((width * height * 3), dtype=np.uint8)
+
+            self.grabbed = False
+            self.frame =  None 
+            
+            self.is_picamera = False
+
+            while True:
+                print("[INFO] Waiting for the video stream to start...")
+                self.frame = self.image_hub.recv_image()
+                self.grabbed = self.frame != None
+                
+                if self.grabbed:
+                    self.image_hub.send_reply(b'OK')
+                    print("[INFO] Video stream started")
+                    break
+            
+            print("[INFO] Video stream started")
+
         else:
             self.is_picamera = video_source == "picamera"
 
@@ -32,6 +52,9 @@ class VideoInput(VideoBaseModule):
             self.height = height
 
             if not self.is_picamera:
+                from picamera.array import PiRGBArray
+                from picamera import PiCamera
+
                 if  type(video_source) is str:
                     print("[INFO] Opening video file: {}".format(video_source))
                     self.stream = cv2.VideoCapture(video_source)
@@ -68,21 +91,24 @@ class VideoInput(VideoBaseModule):
                 
                 self.grabbed = len(self.frame) > 0
 
-            self.stopped = False
-            self.called = False
+        self.stopped = False
+        self.called = False
 
     def join(self):
         self.th.join()
 
     def start(self):
-        print("[INFO] Starting video stream thread...")
-        self.th = Thread(target=self.get, args=())
-        self.th.daemon = True
-        self.th.start()
+        if self.use_threads:
+            print("[INFO] Starting video stream thread...")
+            self.th = Thread(target=self.get, args=())
+            self.th.daemon = True
+            self.th.start()
 
-        if self.on_start is not None:
-            self.on_start()
-        return self
+            if self.on_start is not None:
+                self.on_start()
+            return self
+        else:
+            self.get()
 
     def get_frame(self):
         # print("[INFO] Reading frame...")
@@ -91,7 +117,7 @@ class VideoInput(VideoBaseModule):
                 rpi_name, image = self.image_hub.recv_image()
             
                 if image is not None:
-                    self.frame = cv2.imdecode(image, 1)
+                    self.frame = image
                     self.grabbed = True
                 else:
                     self.grabbed = False
@@ -111,7 +137,7 @@ class VideoInput(VideoBaseModule):
                 rpi_name, image = self.image_hub.recv_image()
             
                 if image is not None:
-                    self.frame = cv2.imdecode(image, 1)
+                    self.frame = image
                     self.grabbed = True
                 else:
                     self.grabbed = False
@@ -124,43 +150,11 @@ class VideoInput(VideoBaseModule):
     def get(self):
         while not self.stopped:
             if not self.grabbed:
-                print("Error")
+                print("Error grabbing frame [VideoInput]")
                 self.stop()
             else:
-                # print("[INFO] Reading frame...")
-                if self.is_picamera:
-                    if self.use_sockets:
-                        rpi_name, image = self.image_hub.recv_image()
-                    
-                        if image is not None:
-                            self.frame = cv2.imdecode(image, 1)
-                            self.grabbed = True
-                        else:
-                            self.grabbed = False
-                        
-                        self.image_hub.send_reply(b'OK')
-                    else:
-                        self.stream.capture(self.raw_capture, format="bgr", use_video_port=True)
-                        
-                        self.frame = self.raw_capture.reshape((self.height, self.width, 3))
-                        self.grabbed = True
-                        # clear the numpy array
-                        self.raw_capture = np.empty((self.width * self.height * 3), dtype=np.uint8)
-                else:
-                    
-                    
-                    if self.use_sockets:
-                        rpi_name, image = self.image_hub.recv_image()
-                    
-                        if image is not None:
-                            self.frame = cv2.imdecode(image, 1)
-                            self.grabbed = True
-                        else:
-                            self.grabbed = False
-                        
-                        self.image_hub.send_reply(b'OK')
-                    else:
-                        (self.grabbed, self.frame) = self.stream.read()
+                self.get_frame()
+
 
     def stop(self):
         self.stopped = True
@@ -169,10 +163,11 @@ class VideoInput(VideoBaseModule):
         print("[INFO] Closing video stream...")
         self.stopped = True
 
-        if not self.is_picamera and self.stream.isOpened():
-            self.stream.release()
-        else:
-            self.stream.close()
+        if not self.use_sockets:
+            if hasattr(self, 'is_picamera') and not self.is_picamera and self.stream.isOpened():
+                self.stream.release()
+            else:
+                self.stream.close()
 
         if self.on_finish is not None and not self.called:
             self.called = True
@@ -183,8 +178,9 @@ class VideoInput(VideoBaseModule):
         return self.stream.isOpened()
 
     def __del__(self):
-        if not self.is_picamera and self.stream.isOpened():
-            self.stream.release()
-        else:
-            if hasattr(self, 'stream'):
-                self.stream.close()
+        if not self.use_sockets:
+            if hasattr(self, 'is_picamera') and not self.is_picamera and self.stream.isOpened():
+                self.stream.release()
+            else:
+                if hasattr(self, 'stream'):
+                    self.stream.close()

@@ -10,8 +10,8 @@ dirname = os.path.dirname(__file__)
 # PROTOTXT = "model/MobileNetSSD_deploy.prototxt"
 # MODEL = "model/MobileNetSSD_deploy.caffemodel"
 
-PROTOTXT = os.path.join(dirname, 'model/MobileNetSSD_deploy.prototxt')
-MODEL = os.path.join(dirname, 'model/MobileNetSSD_deploy.caffemodel')
+PROTOTXT = os.path.join(dirname, 'model\MobileNetSSD_deploy.prototxt')
+MODEL = os.path.join(dirname, 'model\MobileNetSSD_deploy.caffemodel')
 
 """
 BIBLIOGRAFIA :

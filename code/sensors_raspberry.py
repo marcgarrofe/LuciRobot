@@ -9,6 +9,8 @@ import time
 from imutils.video import VideoStream
 import imagezmq
 
+import cv2 
+
 # https://github.com/jeffbass/imagezmq
 
 class SensorsRaspberry:
@@ -72,6 +74,9 @@ class SensorsRaspberry:
             self.read_sensors()
 
             image = self.picam.read()
+
+            image = cv2.resize(image, (694, 694))
+
             self.sender.send_image(self.rpi_name, image)
 
 

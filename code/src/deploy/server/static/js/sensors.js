@@ -1,25 +1,51 @@
-var socket = io();
+// var socket = io();
 
-socket.on('connect', function() {
-    socket.emit('on_client', {data: 'connected'});
-});
+// socket.on('connect', function() {
+//     socket.emit('on_client', {data: 'connected'});
+// });
 
-socket.on('disconnect', function() {
-    socket.emit('on_client', {data: 'disconnected'});
-});
+// socket.on('disconnect', function() {
+//     socket.emit('on_client', {data: 'disconnected'});
+// });
+
+// // We receive the data from sensors
+// socket.on('receive_sensors',  function (data) {
+//     console.log(data);
+//     parse_sensors  (data);
+// });
+
+// // We receive the data from sensors
+// socket.on('message',  function (data) {
+//     console.log(data);
+//     parse_sensors  (data);
+// });
+
+
+
 
 function update(){
-    console.log("Reading Sensors")    
+    console.log("Reading Sensors");    
     
-    socket.emit('get_sensors', "get");
+    // socket.emit('get_sensors', "get");
+    // read sensors.json file and update the values
+
+    $.getJSON("/static/sensors.json", function(data) {
+        console.log("GOT JSON");
+        console.log(data);
+        parse_sensors(data);
+    });
 
     setTimeout(update, 1000); //agafem valors cada sensor a cada segon
 }
 
 
-// We receive the data from sensors
-socket.on('receive_sensors',  function (data) {
-    console.log(data);
+function parse_sensors(data){
+    console.log("Parsing Sensors")
+    // get if data is empty or not
+    if(data.length == 0){
+        console.log("Empty data")
+        return;
+    }
     // parse json data
     var sensors = JSON.parse(data);
     // update sensors
@@ -28,13 +54,16 @@ socket.on('receive_sensors',  function (data) {
         var sensor_value = sensors[key];
         $('#' + key).html(sensor_value);
     });
-});
+}
+
+
 
 
 $( document ).ready(function() {
     console.log( "ready!" );
-    // update();
-
+    
+    update();
+    
     var exampleModal = document.getElementById('exampleModal')
     exampleModal.addEventListener('show.bs.modal', function (event) {
     // Button that triggered the modal
