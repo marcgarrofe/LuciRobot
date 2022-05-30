@@ -1,5 +1,9 @@
 var socket = io();
 
+var sensors_dict = {"gas_concentration":Array.apply(0, Array(60)), "ultrasound_sensor_1_distance":Array.apply(0, Array(60)),"ultrasound_sensor_2_distance":Array.apply(0, Array(60)),"dht11_humidity":Array.apply(0, Array(60)),"dht11_temp":Array.apply(0, Array(60)) }
+var xAxis = Array.from({length: 60}, (_, i) => i + 1);
+//var sensor1 = [60,20,30,55,30,1000,40]	// Solo usado para hardcodear resultados
+
 socket.on('connect', function() {
     socket.emit('on_client', {data: 'connected'});
 });
@@ -27,6 +31,12 @@ socket.on('receive_sensors',  function (data) {
     Object.keys(sensors).forEach(function(key) {
         var sensor_value = sensors[key];
         $('#' + key).html(sensor_value);
+		
+		// if size of array >60 we delete the first element
+		if(sensors_dict[key].push(sensor_value) >= 60){
+			sensors_dict[key].shift();
+		}
+		
     });
 });
 
@@ -36,58 +46,48 @@ $( document ).ready(function() {
     // update();
 
     var exampleModal = document.getElementById('exampleModal')
-    exampleModal.addEventListener('show.bs.modal', function (event) {
-    // Button that triggered the modal
-    var button = event.relatedTarget
-    // Extract info from data-bs-* attributes
-    var recipient = button.getAttribute('data-bs-sensor-name')
-    // If necessary, you could initiate an AJAX request here
-    // and then do the updating in a callback.
-    //
-    // Update the modal's content.
-    var modalTitle = exampleModal.querySelector('.modal-title')
-    var modalBodyInput = exampleModal.querySelector('.modal-body input')
-
-    modalTitle.textContent = 'Sensor ' + recipient + ' graph'
-    modalBodyInput.value = recipient
-    })
-
-    const ctx = document.getElementById('myChart').getContext('2d');
     
-    const myChart = new Chart(ctx, {
-        type: 'bar',
+    exampleModal.addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      var button = event.relatedTarget
+      // Extract info from data-bs-* attributes
+      var sensorName = button.getAttribute('data-bs-sensor-name')
+      var sensorId = button.getAttribute('data-bs-sensor-id')
+      // If necessary, you could initiate an AJAX request here
+      // and then do the updating in a callback.
+      //
+      // Update the modal's content.
+      var modalTitle = exampleModal.querySelector('.modal-title')
+      var modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+      modalTitle.textContent = 'Sensor ' + sensorName + ' graph'
+      modalBodyInput.value = sensorName
+
+      const ctx = document.getElementById('myChart').getContext('2d');
+    
+      const myChart = new Chart(document.getElementById("myChart"), {
+        type: 'line',
         data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
+          labels: xAxis,
+          datasets: [{ 
+          // Mostrará la data de los últimos 60 segundos del sensor
+              data: sensors_dict[sensorName], //También puede ser que sea modalBodyInput pero tampoco lo sé
+              label: sensorId, // También puede ser que sea modalTitle pero no lo sé
+              borderColor: "#3e95cd",
+              fill: false
+            },
+          ]
         },
         options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+          title: {
+            display: true,
+            text: 'Sensor ' + sensorName + ' graph (last 3 minutes)'
+          }
         }
-    });
+      });
+    })
+
+    
 });
 
 
