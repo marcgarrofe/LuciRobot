@@ -22,7 +22,7 @@ video_output_pi = None
 vid_fps = None
 
 class Server:
-    def __init__(self, sensors, video_capture, pi_video_capture, video_output, video_output_pi, port=5000, read_sensors = False):
+    def __init__(self, sensors, video_capture, video_output, pi_video_capture = None, video_output_pi = None, port=5000, read_sensors = False):
         self.port = port
         self.sensors = sensors
 
@@ -53,8 +53,6 @@ class Server:
         self.start_server()
 
     def start_server(self): 
-        
- 
         socketio.run(app, host='0.0.0.0', port = self.port, debug=True, use_reloader  = False)
         
     def start_thread(self):
@@ -77,10 +75,15 @@ def get_sensors(data):
 @socketio.on("on_client")
 def on_client(data):
     print(data)
-    if data == "disconnected":
-        print("[INFO] Client disconnected")
-        video_capture.stop()
-        video_output.stop()
+
+    if 'data' in data:
+        print(data)
+        message = data['data']
+
+        if message == "disconnected":
+            print("[INFO] Client disconnected")
+            video_capture.stop()
+            video_output.stop()
 
 
 @app.route('/')

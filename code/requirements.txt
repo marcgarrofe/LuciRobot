@@ -4,3 +4,5 @@ pyserial
 numpy
 opencv-python       
 vidgear[core]
+google-cloud-speech
+pyaudio
