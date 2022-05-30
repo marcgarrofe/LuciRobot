@@ -91,5 +91,5 @@ while True:
     ax.draw_artist(im1) # draw image again
     fig.canvas.blit(ax.bbox) # blitting - for speeding up run
     fig.canvas.flush_events() # for real-time plot
-    plt.savefig("save.png")
+    savefig("../code/src/MergeImage/img/save.png")
     
