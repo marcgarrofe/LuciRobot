@@ -16,26 +16,33 @@ class Sensors:
         # self.ser.reset_input_buffer()
     
     def parse_sensors(self, json_text):
-        print("Parsing: " + str(json_text))
+        print("Parsing: " + str(json_text))        
         print(len(json_text))
-        json_dict = json.loads(json_text)
 
-        self.gas_concentration = json_dict['gas_concentration']
-        self.ultrasound_sensor_1_distance = json_dict['ultrasound_sensor_1_distance']
-        self.ultrasound_sensor_2_distance = json_dict['ultrasound_sensor_2_distance']
-        self.dht11_humidity = json_dict['dht11_humidity']
-        self.dht11_temp = json_dict['dht11_temp']
-        self.json_value = json_dict
+        if 'gas_concentration' in json_text:
+            json_dict = json.loads(json_text)
+
+
+            self.gas_concentration = json_dict['gas_concentration']
+            self.ultrasound_sensor_1_distance = json_dict['ultrasound_sensor_1_distance']
+            self.ultrasound_sensor_2_distance = json_dict['ultrasound_sensor_2_distance']
+            self.dht11_humidity = json_dict['dht11_humidity']
+            self.dht11_temp = json_dict['dht11_temp']
+            self.json_value = json_dict
+        else:
+            print("Error parsing json")
+            self.json_value = self.error_data()
+            return self.json_value
 
         return json_text
 
     def error_data(self):
         json_text = {}
-        json_text["gas_concentration"] = 0.0
-        json_text["ultrasound_sensor_1_distance"] = 0.0
-        json_text["ultrasound_sensor_2_distance"] = 0.0
-        json_text["dht11_humidity"] = 0.0
-        json_text["dht11_temp"] = 0.0
+        json_text["gas_concentration"] = self.gas_concentration
+        json_text["ultrasound_sensor_1_distance"] =  self.ultrasound_sensor_1_distance
+        json_text["ultrasound_sensor_2_distance"] = self.ultrasound_sensor_2_distance
+        json_text["dht11_humidity"] = self.dht11_humidity
+        json_text["dht11_temp"] = self.dht11_temp
         
         app_json = json.dumps(json_text)
 

@@ -12,7 +12,9 @@ from google.cloud import speech
 
 import pyaudio
 from six.moves import queue
-from threading import Thread
+# from threading import Thread
+
+from multiprocessing import Process
 
 import json
 
@@ -144,11 +146,15 @@ class VoiceInput():
             else:
                 print(transcript + overwrite_chars)
 
-                # We save the "responses" variable in a JSON file
+                # # We save the "responses" variable in a JSON file
                 responses_json['text'] = transcript + overwrite_chars
 
                 with open(self.save_location, 'w') as outfile:
                     json.dump(responses_json, outfile)
+
+                # write to .txt file
+                # with open(self.save_location, 'a') as outfile:
+                #     outfile.write(transcript + overwrite_chars)
 
                 # Exit recognition if any of the transcribed phrases could be
                 # one of our keywords.
@@ -193,7 +199,14 @@ class VoiceInput():
 
     
     def start(self):
-        self.th = Thread(target=self.start_voice, args=())
-        self.th.daemon = True
-        self.th.start()
+        # self.th = Thread(target=self.start_voice, args=())
+        # self.th.daemon = True
+        # self.th.start()
 
+        self.p = Process(target=self.start_voice, args=(), daemon=True)
+        self.p.start()
+        # p.join()
+
+    def join(self):
+        # self.th.join()
+        self.p.join()

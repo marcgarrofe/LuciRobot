@@ -65,5 +65,5 @@ voice_input.start()
 sensors.start_reading()
 server.start()
 
-video_capture.join() # espera que acabi la captura de video de la camera 
 termal_video_input.join()
+video_capture.join() # espera que acabi la captura de video de la camera 

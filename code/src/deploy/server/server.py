@@ -3,6 +3,7 @@ from flask import Flask, g, request, jsonify, render_template, Response, make_re
 from flask_socketio import emit
 from flask_socketio import SocketIO
 from threading import Thread
+from gpiozero import CPUTemperature
 
 
 #from sympy import threaded
@@ -90,9 +91,14 @@ def get_sensors(data):
         sensor_data = sensors.read_sensors()
         print("Serial received: " + str(sensor_data))
         emit('receive_sensors', sensor_data)
+
+        cpu = CPUTemperature()
+        print(cpu.temperature)
+
+        emit('cpu_temp', cpu.temperature)
     except Exception as e:
         print(str(e))
-        emit('receive_sensors', str(e))
+        emit('receive_sensors', sensors.error_data())
 
 @socketio.on("on_client")
 def on_client(data):

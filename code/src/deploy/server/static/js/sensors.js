@@ -1,6 +1,13 @@
 var socket = io();
 
-var sensors_dict = {"gas_concentration":Array.apply(0, Array(60)), "ultrasound_sensor_1_distance":Array.apply(0, Array(60)),"ultrasound_sensor_2_distance":Array.apply(0, Array(60)),"dht11_humidity":Array.apply(0, Array(60)),"dht11_temp":Array.apply(0, Array(60)) }
+var sensors_dict = { 
+  "gas_concentration": Array.apply(0, Array(60)), 
+  "ultrasound_sensor_1_distance": Array.apply(0, Array(60)),
+  "ultrasound_sensor_2_distance": Array.apply(0, Array(60)),
+  "dht11_humidity": Array.apply(0, Array(60)), 
+  "dht11_temp": Array.apply(0, Array(60)) 
+}
+
 var xAxis = Array.from({length: 60}, (_, i) => i + 1);
 //var sensor1 = [60,20,30,55,30,1000,40]	// Solo usado para hardcodear resultados
 
@@ -46,6 +53,24 @@ socket.on('receive_sensors',  function (data) {
     
 });
 
+socket.on('cpu_temp', function (data) {
+    console.log(data);
+    $('#cpu_temp').html(data);
+
+    badge = document.getElementById("cpu_temp_badge");
+    // if data > 75 we change the color of the text
+    if(data > 75){
+      // replace bg-success with bg-danger
+      badge.className = badge.className.replace(/\bbg-success\b/g, 'bg-danger');
+    }
+    else{
+      // replace bg-danger with bg-success
+      badge.className = badge.className.replace(/\bbg-danger\b/g, 'bg-success');
+    }
+
+});
+
+
 socket.on('termal_camera_range', function(data){
     console.log(data);
     // term-graph
@@ -89,14 +114,18 @@ $( document ).ready(function() {
       //
       // Update the modal's content.
       var modalTitle = exampleModal.querySelector('.modal-title')
-      var modalBodyInput = exampleModal.querySelector('.modal-body input')
+      // var modalBodyInput = exampleModal.querySelector('.modal-body input')
 
       modalTitle.textContent = 'Sensor ' + sensorName + ' graph'
-      modalBodyInput.value = sensorName
+      // modalBodyInput.value = sensorName
 
       const ctx = document.getElementById('myChart').getContext('2d');
-    
-      const myChart = new Chart(document.getElementById("myChart"), {
+
+      console.log(sensors_dict);
+      console.log(sensors_dict[sensorName]);
+
+
+      const myChart = new Chart(ctx, {
         type: 'line',
         data: {
           labels: xAxis,

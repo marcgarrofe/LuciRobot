@@ -1,3 +1,5 @@
+var last_text = "";
+
 function write_sentence(sentence){
 	// <div class="transcript-sentence">
     //                                     <div>
@@ -45,25 +47,30 @@ function read_response() {
 	
 	// read voice_response.json file at static folder
 
-	$.getJSON("/static/voice_response.json", function(data) {
-		// parse voice_response.json file
-		print(data);
-		
+	fetch("/static/voice_response.json")
+	.then((response) => {
+  		return response.text();
+	})
+	.then((text) => {
+  		console.log(text);
+
 		try {
-			var voice_response_json = JSON.parse(data);
+			var voice_response_json = JSON.parse(text);
 
-
-			write_sentence(voice_response_json.text);
+			if (last_text != voice_response_json.text) {
+				last_text = voice_response_json.text;
+				write_sentence(voice_response_json.text);
+			}
 			
-			setTimeout(read_response, 500);
 		}
 		catch(err) {
 			
 			console.log(err);
 		}
-
-		
 	});
+
+	setTimeout(read_response, 10);
+
 }
 
 $( document ).ready(function() {

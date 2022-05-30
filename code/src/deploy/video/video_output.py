@@ -13,7 +13,6 @@ from src.computer_vision.object_detector.hog_detector import people_detectorHOG
 from src.computer_vision.object_detector.ssd_detector import people_detectorSSD
 from subprocess import PIPE, Popen
 
-from gpiozero import CPUTemperature
 
 class VideoOutput(VideoBaseModule):
     """
@@ -61,8 +60,7 @@ class VideoOutput(VideoBaseModule):
                 self.frame = frame # guardem el frame processat a la sortida de video
 
                 print("[INFO] FPS: {}".format(self.vid_fps.countsPerSec()))
-                cpu = CPUTemperature()
-                print(cpu.temperature)
+                
 
                 # print(str(self.get_cpu_temperature()))
                 ret, buffer = cv2.imencode('.jpg', self.frame)

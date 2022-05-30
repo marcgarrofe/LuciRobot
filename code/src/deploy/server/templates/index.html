@@ -39,7 +39,13 @@
           </a>
 
             <!-- add three badges -->
-            <span class="badge bg-success">MCU Ok</span>
+            <span id="cpu_temp_badge" class="badge bg-success">
+                <span > Raspberry CPU Temperature </span>
+                <h5 id="cpu_temp"> 20.0 </h5>
+                <span class="material-symbols-outlined">
+                    thermostat
+                </span>
+            </span>
         </div>
       </nav>
 
@@ -85,6 +91,8 @@
                                 <div class="col">
                                     <h5 class="card-title">Gas Concentration</h5>
                                     <h6 class="card-subtitle mb-2 text-muted" id="gas_concentration">4000 ppm</h6>
+                                    
+                                    
                                     
                                 </div>
                                 
@@ -203,7 +211,7 @@
                 </div>
 
                 <div class="col-auto card-deck">
-                    <div class="card m-2 text-white bg-primary" style="width: 20rem;">
+                    <div class="card m-2 text-white bg-primary" style="width: 30rem;">
                         <div class="card-body">
                             <div class="row">
                                  <h2 class="card-title">Live Transcript <span class="material-symbols-outlined">
@@ -214,16 +222,8 @@
                         </div>
                     </div>
 
-                    <div class="card m-2" style="width: 20rem;">
+                    <div class="card m-2" style="width: 30rem;">
                         <div class="card-body" id="transcript-column">
-                            <div class="transcript-sentence">
-                                        <div>
-                                            <h6 class=" mb-2 text-muted" id="timestamp">00:00:00 - </h6>
-                                        </div>
-                                        <div>
-                                            <h6 class="" id="text">I am drowning</h6></h6>
-                                        </div>
-                            </div>
                             
                         </div>             
                     </div>
