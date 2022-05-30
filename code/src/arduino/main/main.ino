@@ -350,13 +350,10 @@ void motors_read_serial() {
       if (thruster_left >= 0 && thruster_right >=0){
        return motors_turn_forward(thruster_left, thruster_right);
       }
-      if (thruster_left < 0 && thruster_right < 0) {
-        return motors_turn_backward(-1*thruster_left, -1*thruster_right);
-      }
-      if (thruster_left < 0) {
-        return motors_turn_leftforward_rightbackward(-1*thruster_left, thruster_right);
-      }
-      return motors_turn_rightforward_leftbackward(thruster_left, -1*thruster_right);
+
+      return motors_turn_backward(-1*thruster_left, -1*thruster_right);
+
+
       
       
       
