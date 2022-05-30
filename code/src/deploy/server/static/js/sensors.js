@@ -24,20 +24,26 @@ function update(){
 // We receive the data from sensors
 socket.on('receive_sensors',  function (data) {
     console.log(data);
-    // parse json data
-    var sensors = JSON.parse(data);
-    // update sensors
+
+    try {
+      // parse json data
+      var sensors = JSON.parse(data);
+      // update sensors
+
+      Object.keys(sensors).forEach(function(key) {
+          var sensor_value = sensors[key];
+          $('#' + key).html(sensor_value);
+
+      // if size of array >60 we delete the first element
+      if(sensors_dict[key].push(sensor_value) >= 60){
+        sensors_dict[key].shift();
+      }
+
+      });
+    } catch (error) {
+        console.log(error);
+    }
     
-    Object.keys(sensors).forEach(function(key) {
-        var sensor_value = sensors[key];
-        $('#' + key).html(sensor_value);
-		
-		// if size of array >60 we delete the first element
-		if(sensors_dict[key].push(sensor_value) >= 60){
-			sensors_dict[key].shift();
-		}
-		
-    });
 });
 
 socket.on('termal_camera_range', function(data){
@@ -68,7 +74,7 @@ socket.on('termal_camera_range', function(data){
 
 $( document ).ready(function() {
     console.log( "ready!" );
-    // update();
+    update();
 
     var exampleModal = document.getElementById('exampleModal')
     

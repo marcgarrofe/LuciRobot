@@ -62,8 +62,7 @@ class VideoInput(VideoBaseModule):
             self.grabbed = len(self.frame) > 0
 
         
-        self.stopped = False
-        self.called = False
+
 
     def join(self):
         self.th.join()
@@ -74,9 +73,7 @@ class VideoInput(VideoBaseModule):
         self.th.daemon = True
         self.th.start()
 
-        if self.on_start is not None:
-            self.on_start()
-        return self
+        return super().start()
 
     def get(self):
         while not self.stopped:
@@ -95,8 +92,6 @@ class VideoInput(VideoBaseModule):
                 else:
                     (self.grabbed, self.frame) = self.stream.read()
 
-    def stop(self):
-        self.stopped = True
     
     def stop(self):
         print("[INFO] Closing video stream...")
@@ -107,9 +102,7 @@ class VideoInput(VideoBaseModule):
         else:
             self.stream.close()
 
-        if self.on_finish is not None and not self.called:
-            self.called = True
-            self.on_finish()
+        return super().stop()
         
     def is_opened(self):
         print("[INFO] Checking if video stream is opened...")

@@ -13,7 +13,7 @@ print ('Detected controller : %s' % j.get_name() )
 ### 2: Obrim canal serial amb l'arduino
 
 serial_is_on = True                            # Deixar en False si l'arduino no està connectada
-serial_port = '/dev/ttyACM0'			        # nom del port on està connectada l'arduino. Es veu mitjançant la comanda ls /dev/tty*
+serial_port = '/dev/ttyACM1'			        # nom del port on està connectada l'arduino. Es veu mitjançant la comanda ls /dev/tty*
 baud_rate = 9600					              # ni idea què és, però ha de ser el mateix número que el que hi ha al setup de l'arduino
 
 if serial_is_on == True:                          # objecte que representa la connexió serial
@@ -30,7 +30,7 @@ if serial_is_on == True:                          # objecte que representa la co
 # 0 -> L horitzontal
 # 5 -> R2   
 axes_to_check = [0,5,2]                         # botons a llegir del comandament
-check_frequency = 5                             # vegades que llegim per segon
+check_frequency = 2                             # vegades que llegim per segon
 breakout_button = 3                             # Botó que apaga el programa. Actualment és el Quadrat
 
 #############################

@@ -44,14 +44,26 @@ function write_sentence(sentence){
 function read_response() {
 	
 	// read voice_response.json file at static folder
-	var voice_response = fs.readFileSync('./static/voice_response.json', 'utf8');
 
-	// parse voice_response.json file
-	var voice_response_json = JSON.parse(voice_response);
+	$.getJSON("/static/voice_response.json", function(data) {
+		// parse voice_response.json file
+		print(data);
+		
+		try {
+			var voice_response_json = JSON.parse(data);
 
-	write_sentence(voice_response_json.response);
-	
-	setTimeout(read_response, 500);
+
+			write_sentence(voice_response_json.text);
+			
+			setTimeout(read_response, 500);
+		}
+		catch(err) {
+			
+			console.log(err);
+		}
+
+		
+	});
 }
 
 $( document ).ready(function() {

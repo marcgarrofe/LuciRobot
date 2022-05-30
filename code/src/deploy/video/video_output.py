@@ -27,7 +27,6 @@ class VideoOutput(VideoBaseModule):
     def __init__(self, frame=None, name = "Video", type_detector="SSD"):
         super().__init__()
         self.frame = frame
-        self.stopped = False
         self.name = name
         self.vid_fps = VideoFPS().start() # inicialitzem el sistema que calcula els frames per segon
 
@@ -43,15 +42,7 @@ class VideoOutput(VideoBaseModule):
         
     def start(self):
         # Thread(target=self.show, args=()).start()
-        if self.on_start is not None:
-            self.on_start()
-        return self
-
-    def get_cpu_temperature(self):
-        """get cpu temperature using vcgencmd"""
-        process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE)
-        output, _error = process.communicate()
-        return float(output[output.index('=') + 1:output.rindex("'")])
+        super().start()
 
     def gen_frames(self, video_capture, termal_video_input):  
         while not self.stopped:
@@ -64,11 +55,8 @@ class VideoOutput(VideoBaseModule):
                     frame = self.people_detector.scan_people(frame)
 
                 frame = self.vid_fps.put_iterations_per_sec(frame) # mostrem el frame processat
-
-                [h,w,c] = termal_frame.shape
-                crop_image = termal_frame[108:h-98, 147:w-159]
-                
-                frame = mergeImage(crop_image, frame)
+                    
+                frame = mergeImage(termal_frame, frame)
 
                 self.frame = frame # guardem el frame processat a la sortida de video
 
@@ -88,16 +76,5 @@ class VideoOutput(VideoBaseModule):
                 frame = None
                 print("[INFO] No frame to show")
             
-            
-    # def show(self):
-    #     while not self.stopped:
-    #         ret, buffer = cv2.imencode('.jpg', self.frame)
-    #         frame = buffer.tobytes()
-    #         yield (b'--frame\r\n'
-    #                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
-
     def stop(self):
-        self.stopped = True
-
-        if self.on_finish is not None:
-            self.on_finish()
+        super().stop()

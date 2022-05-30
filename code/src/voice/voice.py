@@ -12,6 +12,7 @@ from google.cloud import speech
 
 import pyaudio
 from six.moves import queue
+from threading import Thread
 
 import json
 
@@ -90,7 +91,6 @@ class MicrophoneStream(object):
 class VoiceInput():
 
     def __init__(self, lang_code = "es-ES", save_location = "./"):
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"graphical-bus-348706-61e8b3662eb3.json"
         self.lang_code = lang_code
         self.save_location = save_location
 
@@ -110,6 +110,9 @@ class VoiceInput():
         the next result to overwrite it, until the response is a final one. For the
         final one, print a newline to preserve the finalized transcription.
         """
+        # The JSON dictionary
+        responses_json = {}
+
         num_chars_printed = 0
         for response in responses:
             if not response.results:
@@ -141,6 +144,12 @@ class VoiceInput():
             else:
                 print(transcript + overwrite_chars)
 
+                # We save the "responses" variable in a JSON file
+                responses_json['text'] = transcript + overwrite_chars
+
+                with open(self.save_location, 'w') as outfile:
+                    json.dump(responses_json, outfile)
+
                 # Exit recognition if any of the transcribed phrases could be
                 # one of our keywords.
                 if re.search(r"\b(exit|quit|salir)\b", transcript, re.I):
@@ -150,15 +159,14 @@ class VoiceInput():
                 num_chars_printed = 0
 
 
-    def start(self, ):
+    def start_voice(self, ):
         # language_code = "en-US"  # a BCP-47 language tag
         # language_code = "es-ES"
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = r"graphical-bus-348706-61e8b3662eb3.json"
+
         language_code = self.lang_code
 
         client = speech.SpeechClient()
-        
-        # The JSON dictionary
-        responses_json = {}
 
         config = speech.RecognitionConfig(
             encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
@@ -172,21 +180,20 @@ class VoiceInput():
 
         with MicrophoneStream(RATE, CHUNK) as stream:
             audio_generator = stream.generator()
+            
             requests = (
                 speech.StreamingRecognizeRequest(audio_content=content)
                 for content in audio_generator
             )
 
             responses = client.streaming_recognize(streaming_config, requests)
-            
-            # We save the "responses" variable in a JSON file
-            responses_json['text'] = responses
-            with open(self.save_location, 'w') as outfile:
-                json.dump(responses_json, outfile)
 
             # Now, put the transcription responses to use.
             self.listen_print_loop(responses)
 
     
-
+    def start(self):
+        self.th = Thread(target=self.start_voice, args=())
+        self.th.daemon = True
+        self.th.start()
 

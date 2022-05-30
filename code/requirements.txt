@@ -6,3 +6,6 @@ opencv-python
 vidgear[core]
 google-cloud-speech
 pyaudio
+
+adafruit-circuitpython-amg88xx
+colour

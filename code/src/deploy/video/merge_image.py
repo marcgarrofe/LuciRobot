@@ -4,22 +4,26 @@ import cv2
 import matplotlib.image as img
 
 def mergeImage(termic, normal):
-    [hTermic, wTermic, cTermic] = termic.shape
-    [hNormal, wNormal, cNormal] = normal.shape
+    if termic is not None and normal is not None and len(termic) > 0 and len(normal) > 0:
+        normal = cv2.cvtColor(normal, cv2.COLOR_BGR2RGB)
+        print("[INFO] Merging images")
+        print("[INFO] Normal image shape: ", normal.shape)
+        print("[INFO] Termic image shape: ", termic.shape)
 
-    plt.imshow(termic)
-    plt.show()
-    plt.imshow(normal)
-    plt.show()
+        [hTermic, wTermic, cTermic] = termic.shape
+        [hNormal, wNormal, cNormal] = normal.shape
+        
+        combine = cv2.addWeighted(termic, 0.5, normal, 0.5, 0)
 
-    combine = cv2.addWeighted(cv2.resize(termic, (hTermic, wTermic)), 0.5, cv2.resize(normal, (hTermic, wTermic)), 0.5, 0)
+        b, g, r = cv2.split(combine)
 
-    b, g, r = cv2.split(combine)
-    rgb_img = cv2.merge([r, g, b])
+        rgb_img = cv2.merge([r, g, b])
 
-    plt.imshow(rgb_img)
-    plt.show()
+        print("[INFO] Merged image shape: ", rgb_img.shape)
 
+    else:
+        rgb_img = normal
+        
     return rgb_img
 
 # if __name__ == '__main__':

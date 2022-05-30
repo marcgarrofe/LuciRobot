@@ -48,6 +48,12 @@ class Server:
         self.vid_fps = vid_fps
         self.read_sensors = read_sensors
 
+        self.root_path = app.root_path
+
+        print("[INFO] Server created")
+        print("[INFO] Server port: " + str(self.port))
+        print("[INFO] Server root path: " + str(self.root_path))
+
     def start(self):
         print("[INFO] Starting server...")
         # app.run(port=self.port, debug=True)
@@ -98,8 +104,8 @@ def on_client(data):
 
         if message == "disconnected":
             print("[INFO] Client disconnected")
-            video_capture.stop()
-            video_output.stop()
+            # video_capture.stop()
+            # video_output.stop()
 
         elif message == "connected":
             print("[INFO] Client connected")
