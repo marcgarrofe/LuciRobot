@@ -6,6 +6,9 @@ from threading import Thread
 from src.deploy.video.video_module_base import VideoBaseModule
 from src.deploy.video.video_fps import VideoFPS
 
+from src.deploy.video.merge_image import mergeImage
+
+
 from src.computer_vision.object_detector.hog_detector import people_detectorHOG
 from src.computer_vision.object_detector.ssd_detector import people_detectorSSD
 from subprocess import PIPE, Popen
@@ -50,17 +53,22 @@ class VideoOutput(VideoBaseModule):
         output, _error = process.communicate()
         return float(output[output.index('=') + 1:output.rindex("'")])
 
-    def gen_frames(self, video_capture):  
+    def gen_frames(self, video_capture, termal_video_input):  
         while not self.stopped:
             print("[INFO] Serving video feed...")
             if video_capture.grabbed:
                 frame = video_capture.frame # obtenim el frame de la camera
-
+                termal_frame = termal_video_input.frame # obtenim el frame de la termica
 
                 if self.type_detector != "None":
                     frame = self.people_detector.scan_people(frame)
 
                 frame = self.vid_fps.put_iterations_per_sec(frame) # mostrem el frame processat
+
+                [h,w,c] = termal_frame.shape
+                crop_image = termal_frame[108:h-98, 147:w-159]
+                
+                frame = mergeImage(crop_image, frame)
 
                 self.frame = frame # guardem el frame processat a la sortida de video
 

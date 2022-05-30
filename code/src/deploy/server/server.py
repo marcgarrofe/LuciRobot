@@ -17,18 +17,31 @@ socketio = SocketIO(app)
 sensors = None
 video_output = None
 video_capture = None
+termal_video_input = None
+
 pi_video_capture = None
 video_output_pi = None
 vid_fps = None
 
 class Server:
-    def __init__(self, sensors, video_capture, video_output, pi_video_capture = None, video_output_pi = None, port=5000, read_sensors = False):
+    def __init__(self, sensors, video_capture, video_output, termal_video_input, pi_video_capture = None, video_output_pi = None, port=5000, read_sensors = False):
         self.port = port
         self.sensors = sensors
 
+        """
+        RGB CAMERA INPUT 
+        """
         self.video_output = video_output
-
         self.video_capture = video_capture
+
+        """
+        TERMAL CAMERA   
+        """
+        self.termal_video_input = termal_video_input
+
+        """
+        PI CAMERA INPUT (not in use)
+        """
         self.video_output_pi = video_output_pi
         self.pi_video_capture = pi_video_capture
 
@@ -40,6 +53,8 @@ class Server:
         # app.run(port=self.port, debug=True)
         global sensors
         global video_output
+
+        global termal_video_input
         global pi_video_capture
         global video_capture
         global video_output_pi
@@ -49,6 +64,7 @@ class Server:
         pi_video_capture = self.pi_video_capture
         video_capture = self.video_capture
         video_output_pi = self.video_output_pi
+        termal_video_input = self.termal_video_input
 
         self.start_server()
 
@@ -85,6 +101,9 @@ def on_client(data):
             video_capture.stop()
             video_output.stop()
 
+        elif message == "connected":
+            print("[INFO] Client connected")
+
 
 @app.route('/')
 def home():
@@ -93,7 +112,7 @@ def home():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(video_output.gen_frames(video_capture), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(video_output.gen_frames(video_capture, termal_video_input), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/picamera_video_feed')

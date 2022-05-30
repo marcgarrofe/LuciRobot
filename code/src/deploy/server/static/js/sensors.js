@@ -40,6 +40,31 @@ socket.on('receive_sensors',  function (data) {
     });
 });
 
+socket.on('termal_camera_range', function(data){
+    console.log(data);
+    // term-graph
+    const myChart = new Chart(document.getElementById("term-graph"), {
+      type: 'line',
+      data: {
+        labels: xAxis,
+        datasets: [{ 
+        // Mostrará la data de los últimos 60 segundos del sensor
+            data: data, //También puede ser que sea modalBodyInput pero tampoco lo sé
+            label: sensorId, // También puede ser que sea modalTitle pero no lo sé
+            borderColor: "#3e95cd",
+            fill: false
+          },
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Sensor ' + sensorName + ' graph (last 3 minutes)'
+        }
+      }
+    });
+});
+
 
 $( document ).ready(function() {
     console.log( "ready!" );
