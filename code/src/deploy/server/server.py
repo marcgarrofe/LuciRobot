@@ -84,7 +84,6 @@ class Server:
 
 
 
-
 @socketio.on("get_sensors")
 def get_sensors(data):
     try: 
@@ -121,6 +120,32 @@ def on_client(data):
 def home():
     # show the index.html page
     return  render_template("index.html")
+
+@app.route('/stop_detector')
+def stop_detector():
+
+    video_output.stop_detector()
+
+    return  "OK"
+
+@app.route('/start_detector')
+def start_detector():
+
+    video_output.start_detector()
+
+    return  "OK"
+
+
+
+@app.route('/change_detector')
+def detector_modify_options():
+    # get detector_type option from get request
+    detector_type = request.args.get('detector_type')
+    print("[INFO] detector_type: " + str(detector_type))
+
+    video_output.change_detector(detector_type)
+
+    return "OK"
 
 @app.route('/video_feed')
 def video_feed():
