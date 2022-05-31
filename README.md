@@ -10,7 +10,7 @@ Human seeker robot in hostile environments.
    * [How to use](#how-to-use)
    * [Controller panel](#controller-panel)
    * [Driving](#driving-modes)
-   * [Speach to text](#speach-to-text)
+   * [Speech to text](#speech-to-text)
    * [Image processing](#image-processing)
    * [Person detector](#person-detector)
    * [License](#license)
@@ -49,7 +49,7 @@ For running each sample code:
 
 - [VidGear](https://abhitronix.github.io/vidgear/v0.2.5-stable/)
 
-- [Google Cloud Speach](https://cloud.google.com/speech-to-text)
+- [Google Cloud Speech](https://cloud.google.com/speech-to-text)
 
 - [PyAudio](https://pypi.org/project/PyAudio/)
 
@@ -85,7 +85,7 @@ Luci's has a wide range of sensors such as: gas sensor, distance, temperature, h
 
 In order to perform more accurate driving experience, Luci is controlled with a gamepad. This cool feature allows the operator to control each wheal movement and speed separately in order to get a better accuracy movement.
 
-# Speach to text
+# Speech to text
 
 Luci's microphone can recognize voice and convert it to text. This feature is founded on the controller panel and allows the operator to read the live transcription of the room's voice.
 
