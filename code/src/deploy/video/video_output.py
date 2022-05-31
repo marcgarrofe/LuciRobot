@@ -28,7 +28,7 @@ class VideoOutput(VideoBaseModule):
         self.frame = frame
         self.name = name
         self.vid_fps = VideoFPS().start() # inicialitzem el sistema que calcula els frames per segon
-        self.stop_detector = False
+        # self.stop_detector = False
 
         self.type_detector = type_detector
         if type_detector == "SSD":
@@ -45,11 +45,11 @@ class VideoOutput(VideoBaseModule):
         elif type_detector == "HOG":
             self.people_detector = people_detectorHOG()
 
-    def stop_detector(self):
-        self.stop_detector = True
+    # def stop_detector(self):
+    #     self.stop_detector = True
 
-    def start_detector(self):
-        self.stop_detector = False
+    # def start_detector(self):
+    #     self.stop_detector = False
 
     def start(self):
         # Thread(target=self.show, args=()).start()
@@ -62,7 +62,7 @@ class VideoOutput(VideoBaseModule):
                 frame = video_capture.frame # obtenim el frame de la camera
                 termal_frame = termal_video_input.frame # obtenim el frame de la termica
 
-                if self.type_detector != "None" and not self.stop_detector: 
+                if self.type_detector != "None": 
                     frame = self.people_detector.scan_people(frame)
 
                 frame = self.vid_fps.put_iterations_per_sec(frame) # mostrem el frame processat

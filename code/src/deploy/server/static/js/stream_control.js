@@ -22,24 +22,24 @@ $('#detectors').on('change', function (e) {
 
 });
 
-function stop(){
-    $.ajax({
-        url: '/stop_detector',
-        type: 'GET',
-        success: function (data) {
-            console.log(data);
-            alert('Stream stopped');
-        }
-    });
-}
+// function stop(){
+//     $.ajax({
+//         url: '/stop_detector',
+//         type: 'GET',
+//         success: function (data) {
+//             console.log(data);
+//             alert('Stream stopped');
+//         }
+//     });
+// }
 
-function start(){
-    $.ajax({
-        url: '/start_detector',
-        type: 'GET',
-        success: function (data) {
-            console.log(data);
-            alert('Stream started');
-        }
-    });
-}
+// function start(){
+//     $.ajax({
+//         url: '/start_detector',
+//         type: 'GET',
+//         success: function (data) {
+//             console.log(data);
+//             alert('Stream started');
+//         }
+//     });
+// }
