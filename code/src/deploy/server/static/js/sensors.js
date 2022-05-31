@@ -1,11 +1,11 @@
 var socket = io();
 
 var sensors_dict = { 
-  "gas_concentration": Array.apply(0, Array(60)), 
-  "ultrasound_sensor_1_distance": Array.apply(0, Array(60)),
-  "ultrasound_sensor_2_distance": Array.apply(0, Array(60)),
-  "dht11_humidity": Array.apply(0, Array(60)), 
-  "dht11_temp": Array.apply(0, Array(60)) 
+  "gas_concentration": new Array(60).fill(0);, 
+  "ultrasound_sensor_1_distance": new Array(60).fill(0);,
+  "ultrasound_sensor_2_distance": new Array(60).fill(0);,
+  "dht11_humidity": new Array(60).fill(0);, 
+  "dht11_temp": new Array(60).fill(0); 
 }
 
 var xAxis = Array.from({length: 60}, (_, i) => i + 1);
