@@ -149,6 +149,8 @@ class TermalCameraInput(VideoBaseModule):
 
                         self.frame[int(self.displayPixelHeight * ix):int(self.displayPixelHeight * (ix + 1)), int(self.displayPixelWidth * jx):int(self.displayPixelWidth * (jx + 1))] = c
 
+                self.frame = np.fliplr(self.frame)
+
     def stop(self):
         self.grabbed = False
         super().stop()

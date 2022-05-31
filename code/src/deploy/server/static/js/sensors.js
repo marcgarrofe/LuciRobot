@@ -1,12 +1,15 @@
 var socket = io();
 
 var sensors_dict = { 
-  "gas_concentration": new Array(60).fill(0);, 
-  "ultrasound_sensor_1_distance": new Array(60).fill(0);,
-  "ultrasound_sensor_2_distance": new Array(60).fill(0);,
-  "dht11_humidity": new Array(60).fill(0);, 
-  "dht11_temp": new Array(60).fill(0); 
+  "gas_concentration": new Array(60).fill(0), 
+  "ultrasound_sensor_1_distance": new Array(60).fill(0),
+  "ultrasound_sensor_2_distance": new Array(60).fill(0),
+  "dht11_humidity": new Array(60).fill(0), 
+  "dht11_temp": new Array(60).fill(0),
 }
+
+var myChart = undefined;
+var currentOpenSensor = undefined;
 
 var xAxis = Array.from({length: 60}, (_, i) => i + 1);
 //var sensor1 = [60,20,30,55,30,1000,40]	// Solo usado para hardcodear resultados
@@ -46,6 +49,19 @@ socket.on('receive_sensors',  function (data) {
         sensors_dict[key].shift();
       }
 
+      // update chart
+      if(myChart != undefined){
+        
+        if (currentOpenSensor != undefined && key == currentOpenSensor) {
+          myChart.data.datasets[0].data = sensors_dict[key];
+          myChart.data.datasets[0].label = key;
+          myChart.update();
+        }
+  
+  
+      }
+
+
       });
     } catch (error) {
         console.log(error);
@@ -54,7 +70,7 @@ socket.on('receive_sensors',  function (data) {
 });
 
 socket.on('cpu_temp', function (data) {
-    console.log(data);
+    // console.log(data);
     $('#cpu_temp').html(data);
 
     badge = document.getElementById("cpu_temp_badge");
@@ -102,6 +118,32 @@ $( document ).ready(function() {
     update();
 
     var exampleModal = document.getElementById('exampleModal')
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    var sensorName = 'gas_concentration';
+    var sensorId = 'gas_concentration';
+    
+    myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: xAxis,
+        datasets: [{ 
+        // Mostrará la data de los últimos 60 segundos del sensor
+            data: sensors_dict[sensorId], //También puede ser que sea modalBodyInput pero tampoco lo sé
+            label: sensorName, // También puede ser que sea modalTitle pero no lo sé
+            borderColor: "#3e95cd",
+            fill: false
+          },
+        ]
+      },
+      options: {
+        title: {
+          display: true,
+          text: 'Sensor ' + sensorName + ' graph (last 3 minutes)'
+        }
+      }
+    });
+
     
     exampleModal.addEventListener('show.bs.modal', function (event) {
       // Button that triggered the modal
@@ -118,36 +160,19 @@ $( document ).ready(function() {
 
       modalTitle.textContent = 'Sensor ' + sensorName + ' graph'
       // modalBodyInput.value = sensorName
-
-      const ctx = document.getElementById('myChart').getContext('2d');
+      currentOpenSensor = sensorId;
 
       console.log(sensors_dict);
-      console.log(sensors_dict[sensorName]);
+      console.log(sensors_dict[sensorId]);
+      
+      myChart.data.datasets[0].data = sensors_dict[sensorId];
+      myChart.data.datasets[0].label = sensorName;
 
 
-      const myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: xAxis,
-          datasets: [{ 
-          // Mostrará la data de los últimos 60 segundos del sensor
-              data: sensors_dict[sensorName], //También puede ser que sea modalBodyInput pero tampoco lo sé
-              label: sensorId, // También puede ser que sea modalTitle pero no lo sé
-              borderColor: "#3e95cd",
-              fill: false
-            },
-          ]
-        },
-        options: {
-          title: {
-            display: true,
-            text: 'Sensor ' + sensorName + ' graph (last 3 minutes)'
-          }
-        }
-      });
-    })
+      myChart.update();
 
-    
+    } );
+   
 });
 
 

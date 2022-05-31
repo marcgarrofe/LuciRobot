@@ -52,12 +52,13 @@ function read_response() {
   		return response.text();
 	})
 	.then((text) => {
-  		console.log(text);
 
 		try {
 			var voice_response_json = JSON.parse(text);
 
 			if (last_text != voice_response_json.text) {
+				console.log(text);
+
 				last_text = voice_response_json.text;
 				write_sentence(voice_response_json.text);
 			}

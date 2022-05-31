@@ -39,12 +39,12 @@ video_capture.on_finish = on_finish # Assigna la funcio on_finish al event on_fi
 
 termal_video_input =  TermalCameraInput(width=width, height=height) 
 
-video_output = VideoOutput(video_capture.frame,  name = 'Hyper rapido', type_detector="None") # inicialitzem la sortida de video
+video_output = VideoOutput(video_capture.frame,  name = 'Hyper rapido', type_detector="HOG") # inicialitzem la sortida de video
 video_output.on_start = None # assignem el metode on_start que es cridara al iniciar la sortida de video
 video_output.on_finish = on_finish # assignem el metode on_finish a la classe VideoOutput per a que es cridi quan acabi el video o cliquem la lletra q
 
 
-sensors = Sensors(use_serial=True) # inicialitzem els sensors
+sensors = Sensors(use_serial=True, port='/dev/ttyACM0') # inicialitzem els sensors
 server = Server(sensors, video_capture,  video_output, termal_video_input=termal_video_input) # inicialitzem el servidor
 
 # save_location = os.path.join(server.root_path, "/static/", "voice_response.json")

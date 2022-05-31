@@ -13,7 +13,7 @@ def mergeImage(termic, normal):
         [hTermic, wTermic, cTermic] = termic.shape
         [hNormal, wNormal, cNormal] = normal.shape
         
-        combine = cv2.addWeighted(termic, 0.5, normal, 0.5, 0)
+        combine = cv2.addWeighted(termic, 0.8, normal, 0.2, 0)
 
         b, g, r = cv2.split(combine)
 
