@@ -4,7 +4,6 @@
 Human seeker robot in hostile environments.
 
 
-
 # Table of Contents
    * [What is this?](#what-is-this)
    * [Requirements](#requirements)
@@ -74,13 +73,15 @@ Isn't it beautiful?
 
 Luci has a build-in controller panel web server. Her user-friendly interface allows the operator to see through Luci's eyes and sensors can drive where none can arrive.
 
-<img src="https://github.com/marcgarrofe/RLP-PLAB/blob/main/img/website.png" align="left" width="500"/>
+![alt text](https://github.com/marcgarrofe/RLP-PLAB/blob/main/img/website.png)
 
 
 # Driving modes
 
 
 # Speach to text
+
+Luci's microphone can recognize voice and conver it to text. This feature is founded on the controller panel.
 
 
 # License 
