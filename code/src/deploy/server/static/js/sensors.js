@@ -23,7 +23,7 @@ socket.on('disconnect', function() {
 });
 
 function update(){
-    console.log("Reading Sensors")    
+    // console.log("Reading Sensors")    
     
     socket.emit('get_sensors', "get");
 
@@ -33,7 +33,7 @@ function update(){
 
 // We receive the data from sensors
 socket.on('receive_sensors',  function (data) {
-    console.log(data);
+    // console.log(data);
 
     try {
       // parse json data

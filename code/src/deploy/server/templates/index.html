@@ -13,6 +13,7 @@
 
     <script src="{{ url_for('static', filename='js/sensors.js') }}"></script>
     <script src="{{ url_for('static', filename='js/voice.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/stream_control.js') }}"></script>
     
     
     
@@ -192,8 +193,25 @@
                             <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
                         </div>
                         <div class="card-body">
-                            <a href="#" class="card-link">Stop</a>
-                            <a href="#" class="card-link">Resume</a>
+                            <!-- stop and start butttons -->
+                            <button type="button" class="btn btn-primary" id="start_button" onclick="start()">
+                                <span class="material-symbols-outlined">
+                                    play_arrow
+                                    </span>
+                            </button>
+
+                            <button type="button" class="btn btn-primary" id="stop_button" onclick="stop()"> 
+                                <span class="material-symbols-outlined">
+                                    stop
+                                    </span>
+                            </button>
+
+                            <label for="detectors">People detector method:</label>
+
+                            <select id="detectors">
+                                <option value="SDD">Neural Network (SSD)</option>
+                                <option value="HOG">Histrograms (HOG)</option>
+                              </select>
                         </div>
                     </div>
 
