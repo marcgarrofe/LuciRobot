@@ -10,7 +10,9 @@ Human seeker robot in hostile environments.
    * [How to use](#how-to-use)
    * [Controller panel](#controller-panel)
    * [Driving](#driving-modes)
-   * [Speach to text](#speach-to-text)
+   * [Speech to text](#speech-to-text)
+   * [Image processing](#image-processing)
+   * [Person detector](#person-detector)
    * [License](#license)
    * [Contribution](#contribution)
    * [Authors](#authors)
@@ -19,6 +21,8 @@ Human seeker robot in hostile environments.
 # What is this?
 
 Luci is a human detector robot designed to locate people inside hostile enviroments such as gas, smoke or fire. 
+
+![alt text](https://github.com/marcgarrofe/RLP-PLAB/blob/main/img/luci.png)
 
 Features:
 
@@ -45,7 +49,7 @@ For running each sample code:
 
 - [VidGear](https://abhitronix.github.io/vidgear/v0.2.5-stable/)
 
-- [Google Cloud Speach](https://cloud.google.com/speech-to-text)
+- [Google Cloud Speech](https://cloud.google.com/speech-to-text)
 
 - [PyAudio](https://pypi.org/project/PyAudio/)
 
@@ -73,16 +77,27 @@ Isn't it beautiful?
 
 Luci has a build-in controller panel web server. Her user-friendly interface allows the operator to see through Luci's eyes and sensors can drive where none can arrive.
 
-![alt text](https://github.com/marcgarrofe/RLP-PLAB/blob/main/img/website.png)
+Luci's has a wide range of sensors such as: gas sensor, distance, temperature, humidity, microphone and two cameras. You can see all the sensors displaying below:
 
+![alt text](https://github.com/marcgarrofe/RLP-PLAB/blob/main/img/screenshot_1.png)
 
 # Driving modes
 
+In order to perform more accurate driving experience, Luci is controlled with a gamepad. This cool feature allows the operator to control each wheal movement and speed separately in order to get a better accuracy movement.
 
-# Speach to text
+# Speech to text
 
-Luci's microphone can recognize voice and conver it to text. This feature is founded on the controller panel.
+Luci's microphone can recognize voice and convert it to text. This feature is founded on the controller panel and allows the operator to read the live transcription of the room's voice.
 
+# Image processing
+
+The robot's eyes are formed of a wide-range camera and a thermal camera that combined using image processing provides an RGB realtime image with temperature coloring.
+
+Finally, in order to drive and have a real time image from Luci, she has a build in video stabilization developed with software that uses a wide range of image stabilization such as: KeyPoint matching, Fourier image superposition and Optical Flow. Each age can be called by the operator in order to find the implementation that works best for each situation.
+
+# Person detector
+
+Luci's computer runs a Neuronal Network that detects people and animals in the room. This tool helps the firefighters to identify the number of people inside a building and combined with the thermal camera we can determinate the state of the subject.
 
 # License 
 
