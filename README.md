@@ -12,6 +12,7 @@ Human seeker robot in hostile environments.
    * [Driving](#driving-modes)
    * [Speach to text](#speach-to-text)
    * [Image processing](#image-processing)
+   * [Person detector](#person-detector)
    * [License](#license)
    * [Contribution](#contribution)
    * [Authors](#authors)
@@ -78,7 +79,7 @@ Luci has a build-in controller panel web server. Her user-friendly interface all
 
 Luci's has a wide range of sensors such as: gas sensor, distance, temperature, humidity, microphone and two cameras. You can see all the sensors displaying below:
 
-![alt text](https://github.com/marcgarrofe/RLP-PLAB/blob/main/img/website.png)
+![alt text](https://github.com/marcgarrofe/RLP-PLAB/blob/main/img/screenshot_1.png)
 
 # Driving modes
 
@@ -94,6 +95,9 @@ The robot's eyes are formed of a wide-range camera and a thermal camera that com
 
 Finally, in order to drive and have a real time image from Luci, she has a build in video stabilization developed with software that uses a wide range of image stabilization such as: KeyPoint matching, Fourier image superposition and Optical Flow. Each age can be called by the operator in order to find the implementation that works best for each situation.
 
+# Person detector
+
+Luci's computer runs a Neuronal Network that detects people and animals in the room. This tool helps the firefighters to identify the number of people inside a building and combined with the thermal camera we can determinate the state of the subject.
 
 # License 
 
